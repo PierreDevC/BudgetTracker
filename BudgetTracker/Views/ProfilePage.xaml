@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetTracker.Views.ProfilePage"
+             BackgroundColor="{StaticResource Background}"
+             Title="Profil">
+
+    <ScrollView Padding="24">
+        <VerticalStackLayout Spacing="16">
+
+            <!-- Avatar -->
+            <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40"
+                   BackgroundColor="{StaticResource Primary}" Padding="0"
+                   HorizontalOptions="Center" HasShadow="False" Margin="0,20,0,0">
+                <Label Text="👤" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Frame>
+
+            <Label Text="Mon Profil" Style="{StaticResource PageTitle}" HorizontalOptions="Center" />
+
+            <!-- Form -->
+            <Frame Style="{StaticResource CardFrame}" Padding="20">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Nom" FontAttributes="Bold" />
+                    <Entry Text="{Binding Name}" Placeholder="Votre nom" />
+
+                    <Label Text="Courriel" FontAttributes="Bold" />
+                    <Entry Text="{Binding Email}" Placeholder="Courriel" Keyboard="Email" />
+
+                    <Label Text="Objectif" FontAttributes="Bold" />
+                    <Entry Text="{Binding Goal}" Placeholder="Votre but financier" />
+
+                    <Label Text="Raison" FontAttributes="Bold" />
+                    <Entry Text="{Binding Reason}" Placeholder="Pourquoi BudgetTracker?" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Settings section -->
+            <Label Text="Paramètres" Style="{StaticResource SectionTitle}" Margin="0,8,0,0" />
+            <Frame Style="{StaticResource CardFrame}" Padding="16">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Notifications" VerticalOptions="Center" />
+                        <Switch Grid.Column="1" IsToggled="True" OnColor="{StaticResource Primary}" />
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="#E0E0E0" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Mode sombre" VerticalOptions="Center" />
+                        <Switch Grid.Column="1" IsToggled="False" OnColor="{StaticResource Primary}" />
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="#E0E0E0" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Devise" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="CAD $" TextColor="{StaticResource TextSecondary}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Sauvegarder" Style="{StaticResource PrimaryButton}"
+                    Command="{Binding SaveCommand}" />
+
+            <Button Text="Déconnexion" BackgroundColor="{StaticResource ExpenseRed}"
+                    TextColor="White" CornerRadius="12" HeightRequest="50"
+                    Command="{Binding LogoutCommand}" Margin="0,0,0,30" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

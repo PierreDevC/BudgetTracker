@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BudgetTracker.ViewModels"
+             x:Class="BudgetTracker.Views.OnboardingPage"
+             BackgroundColor="#F2F1EB"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.BindingContext>
+        <vm:OnboardingViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid Padding="24" RowDefinitions="Auto,*,Auto">
+
+        <!-- Progress dots -->
+        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="8" Margin="0,40,0,20">
+            <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5"
+                     BackgroundColor="#134016" Opacity="{Binding Dot0Opacity}" />
+            <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5"
+                     BackgroundColor="#134016" Opacity="{Binding Dot1Opacity}" />
+        </HorizontalStackLayout>
+
+        <!-- Content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="12">
+
+                <!-- Step 0: Goal selection -->
+                <VerticalStackLayout IsVisible="{Binding IsStep0}" Spacing="12">
+
+                    <Label Text="Quel est votre objectif?"
+                           Style="{StaticResource PageTitle}"
+                           HorizontalOptions="Start" />
+                    <Label Text="Choisissez un objectif pour commencer."
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           Margin="0,0,0,8" />
+
+                    <VerticalStackLayout Spacing="10"
+                                        BindableLayout.ItemsSource="{Binding Goals}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:GoalOption">
+                                <Border BackgroundColor="White"
+                                        StrokeThickness="0.5"
+                                        Stroke="#AAAAAA"
+                                        StrokeShape="RoundRectangle 16"
+                                        Padding="14">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+                                        <!-- Icon box -->
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="{Binding IconBackground}"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 10"
+                                                WidthRequest="44" HeightRequest="44">
+                                            <Label Text="{Binding Emoji}"
+                                                   FontSize="20"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                                        </Border>
+
+                                        <!-- Name + description -->
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             VerticalOptions="Center"
+                                                             Spacing="2">
+                                            <Label Text="{Binding Name}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="15"
+                                                   TextColor="{StaticResource TextPrimary}" />
+                                            <Label Text="{Binding Description}"
+                                                   FontSize="12"
+                                                   TextColor="{StaticResource TextSecondary}" />
+                                        </VerticalStackLayout>
+
+                                        <!-- Chevron -->
+                                        <Label Grid.Column="2"
+                                               Text="›"
+                                               FontSize="22"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               VerticalOptions="Center" />
+
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectGoalCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+
+                <!-- Step 1: Goal details -->
+                <VerticalStackLayout IsVisible="{Binding IsStep1}" Spacing="14">
+
+                    <Label Text="Résumé de l'objectif"
+                           Style="{StaticResource PageTitle}"
+                           HorizontalOptions="Start" />
+
+                    <!-- Selected goal header -->
+                    <Border BackgroundColor="White"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="14"
+                            Margin="0,0,0,8">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Border Grid.Column="0"
+                                    BackgroundColor="{Binding SelectedGoal.IconBackground}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    WidthRequest="44" HeightRequest="44">
+                                <Label Text="{Binding SelectedGoal.Emoji}"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                            <Label Grid.Column="1"
+                                   Text="{Binding SelectedGoal.Name}"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Monthly savings -->
+                    <Label Text="Épargne mensuelle nécessaire"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Border StrokeShape="RoundRectangle 40"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            BackgroundColor="White"
+                            Padding="16,0">
+                        <Entry Placeholder="ex: 500 $"
+                               Text="{Binding MonthlySavings}"
+                               TextColor="Black"
+                               PlaceholderColor="#AAAAAA"
+                               BackgroundColor="Transparent"
+                               Keyboard="Numeric" />
+                    </Border>
+
+                    <!-- Months to goal -->
+                    <Label Text="Mois jusqu'à l'objectif"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Border StrokeShape="RoundRectangle 40"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            BackgroundColor="White"
+                            Padding="16,0">
+                        <Entry Placeholder="ex: 24"
+                               Text="{Binding MonthsToGoal}"
+                               TextColor="Black"
+                               PlaceholderColor="#AAAAAA"
+                               BackgroundColor="Transparent"
+                               Keyboard="Numeric" />
+                    </Border>
+
+                    <!-- Income share -->
+                    <Label Text="Part du revenu mensuel (%)"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Border StrokeShape="RoundRectangle 40"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            BackgroundColor="White"
+                            Padding="16,0">
+                        <Entry Placeholder="ex: 20"
+                               Text="{Binding IncomeShare}"
+                               TextColor="Black"
+                               PlaceholderColor="#AAAAAA"
+                               BackgroundColor="Transparent"
+                               Keyboard="Numeric" />
+                    </Border>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Buttons -->
+        <VerticalStackLayout Grid.Row="2" Spacing="10" Margin="0,12,0,30">
+            <Button Text="Terminer"
+                    BackgroundColor="#134016"
+                    TextColor="White"
+                    CornerRadius="40"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    IsVisible="{Binding ShowNextButton}"
+                    Command="{Binding NextCommand}" />
+            <Button Text="Passer"
+                    BackgroundColor="Transparent"
+                    TextColor="#134016"
+                    CornerRadius="40"
+                    BorderColor="#134016"
+                    BorderWidth="1.5"
+                    HeightRequest="50"
+                    IsVisible="{Binding ShowSkipButton}"
+                    Command="{Binding SkipCommand}" />
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>

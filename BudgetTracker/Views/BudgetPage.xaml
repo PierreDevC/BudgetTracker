@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BudgetTracker.ViewModels"
+             x:Class="BudgetTracker.Views.BudgetPage"
+             BackgroundColor="#F2F1EB"
+             Shell.NavBarIsVisible="False"
+             Title="Budget">
+
+    <Grid>
+        <VerticalStackLayout Spacing="0">
+            <!-- Rounded Header -->
+            <Border Style="{StaticResource PageHeader}">
+                <Label Text="Budget" Style="{StaticResource PageHeaderTitle}" />
+            </Border>
+
+            <!-- Scrollable content -->
+            <ScrollView x:Name="MainScroll" Scrolled="OnScrolled">
+                <Grid Padding="20,20,20,100" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
+
+                    <!-- Summary — top card: Revenu -->
+                    <Border Grid.Row="0"
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            Padding="20,16">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Revenu mensuel" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding TotalIncome, StringFormat='{0:C}'}"
+                                       FontSize="22" FontAttributes="Bold"
+                                       TextColor="{StaticResource IncomeGreen}" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="#E8F5E9"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 20"
+                                    Padding="10,6"
+                                    VerticalOptions="Center">
+                                <Label Text="Modifier" FontSize="12" TextColor="#134016">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding EditIncomeCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Summary — Budgété + Restant -->
+                    <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border Grid.Column="0"
+                                BackgroundColor="White"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0.5"
+                                Stroke="#AAAAAA"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Budgété" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding TotalBudgeted, StringFormat='{0:C}'}"
+                                       FontSize="18" FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimary}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1"
+                                BackgroundColor="White"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0.5"
+                                Stroke="#AAAAAA"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Restant" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding TotalRemaining, StringFormat='{0:C}'}"
+                                       FontSize="18" FontAttributes="Bold"
+                                       TextColor="{Binding TotalRemainingColor}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- Insight (warning only) -->
+                    <Border Grid.Row="2"
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 12"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            Padding="16,10"
+                            IsVisible="{Binding HasInsight}">
+                        <Label Text="{Binding InsightMessage}" FontSize="13" TextColor="{StaticResource TextPrimary}" />
+                    </Border>
+
+                    <!-- Category list -->
+                    <VerticalStackLayout Grid.Row="3" Spacing="10">
+
+                        <!-- Empty state -->
+                        <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                                             HorizontalOptions="Center"
+                                             Spacing="8" Margin="0,30,0,0">
+                            <Label Text="📋" FontSize="48" HorizontalOptions="Center" />
+                            <Label Text="Aucune catégorie pour l'instant"
+                                   FontSize="16" TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="Center" />
+                            <Label Text="Commencez par ajouter votre première catégorie."
+                                   FontSize="13" TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- Category items -->
+                        <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Categories}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:BudgetItemViewModel">
+                                    <Border BackgroundColor="White"
+                                            StrokeShape="RoundRectangle 16"
+                                            StrokeThickness="0.5"
+                                            Stroke="#AAAAAA"
+                                            Padding="16">
+                                        <VerticalStackLayout Spacing="8">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <Label Text="{Binding Name}"
+                                                       FontAttributes="Bold" FontSize="15"
+                                                       TextColor="{StaticResource TextPrimary}"
+                                                       VerticalOptions="Center" />
+                                                <Label Grid.Column="1"
+                                                       Text="{Binding Remaining, StringFormat='{0:C}'}"
+                                                       FontAttributes="Bold" FontSize="15"
+                                                       TextColor="{Binding RemainingColor}"
+                                                       VerticalOptions="Center" />
+                                            </Grid>
+                                            <ProgressBar Progress="{Binding Progress}"
+                                                         ProgressColor="{Binding ProgressColor}"
+                                                         HeightRequest="6" />
+                                            <Label Text="{Binding SpentSummary}"
+                                                   FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                        </VerticalStackLayout>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCategoryCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+            </ScrollView>
+        </VerticalStackLayout>
+
+        <!-- Floating Action Button -->
+        <Button x:Name="FabButton"
+                Text="+ Catégorie"
+                BackgroundColor="#134016"
+                TextColor="White"
+                CornerRadius="28"
+                HeightRequest="56"
+                FontAttributes="Bold"
+                FontSize="15"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,20,30"
+                Clicked="OnFabClicked" />
+
+        <!-- Bottom sheet overlay -->
+        <Grid x:Name="SheetOverlay" IsVisible="False">
+
+            <!-- Dimmed background — tap to dismiss -->
+            <BoxView BackgroundColor="#80000000">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOverlayTapped" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+
+            <!-- Sheet panel -->
+            <Border x:Name="SheetPanel"
+                    BackgroundColor="#F2F1EB"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 24,24,0,0"
+                    VerticalOptions="End"
+                    MinimumHeightRequest="520"
+                    Padding="24,0,24,48">
+                <VerticalStackLayout Spacing="20">
+
+                    <!-- Drag handle area -->
+                    <Grid HeightRequest="36" Margin="0,8,0,0">
+                        <BoxView WidthRequest="40" HeightRequest="4" CornerRadius="2"
+                                 BackgroundColor="#CCCCCC"
+                                 HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Grid.GestureRecognizers>
+                            <PanGestureRecognizer PanUpdated="OnSheetPan" />
+                        </Grid.GestureRecognizers>
+                    </Grid>
+
+                    <!-- Title -->
+                    <Label Text="Nouvelle catégorie"
+                           Style="{StaticResource SectionTitle}"
+                           Margin="0,0,0,4" />
+
+                    <!-- Name field -->
+                    <Label Text="Nom de la catégorie"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Border StrokeShape="RoundRectangle 40"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            BackgroundColor="White"
+                            Padding="16,0">
+                        <Entry x:Name="NameEntry"
+                               Placeholder="ex: Épiceries"
+                               TextColor="Black"
+                               PlaceholderColor="#AAAAAA"
+                               BackgroundColor="Transparent"
+                               ReturnType="Next" />
+                    </Border>
+
+                    <!-- Amount field -->
+                    <Label Text="Montant budgété ($)"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Border StrokeShape="RoundRectangle 40"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            BackgroundColor="White"
+                            Padding="16,0">
+                        <Entry x:Name="AmountEntry"
+                               Placeholder="ex: 200"
+                               TextColor="Black"
+                               PlaceholderColor="#AAAAAA"
+                               BackgroundColor="Transparent"
+                               Keyboard="Numeric"
+                               ReturnType="Done" />
+                    </Border>
+
+                    <!-- Ajouter button -->
+                    <Button Text="Ajouter"
+                            BackgroundColor="#134016"
+                            TextColor="White"
+                            CornerRadius="40"
+                            FontAttributes="Bold"
+                            HeightRequest="50"
+                            Margin="0,8,0,0"
+                            Clicked="OnConfirmAdd" />
+
+                    <!-- Annuler -->
+                    <Label Text="Annuler"
+                           HorizontalOptions="Center"
+                           TextColor="{StaticResource TextSecondary}"
+                           FontSize="14"
+                           Margin="0,0,0,8">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCancelSheet" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </VerticalStackLayout>
+            </Border>
+
+        </Grid>
+
+    </Grid>
+</ContentPage>

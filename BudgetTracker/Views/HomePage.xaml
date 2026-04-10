@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BudgetTracker.ViewModels"
+             x:Class="BudgetTracker.Views.HomePage"
+             BackgroundColor="#F2F1EB"
+             Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <ScrollView x:Name="MainScroll" Scrolled="OnScrolled">
+            <Grid Padding="20,20,20,100" RowDefinitions="Auto,Auto,Auto,*">
+
+                <!-- Header: greeting + profile icon -->
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,20,0,16">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding UserName, StringFormat='Bonjour, {0} 👋'}" FontSize="24"
+                               FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="Voici votre sommaire du mois" FontSize="14"
+                               TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <Border Grid.Column="1" WidthRequest="44" HeightRequest="44" 
+                            StrokeShape="RoundRectangle 22"
+                            Padding="0" BackgroundColor="#134016" StrokeThickness="0">
+                        <Label Text="👤" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToProfileCommand}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
+
+                <!-- 4 Summary Cards -->
+                <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                      ColumnSpacing="12" RowSpacing="12" Margin="0,0,0,16">
+
+                    <!-- Balance -->
+                    <Border Grid.Row="0" Grid.Column="0" 
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Solde" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                            <Label Text="{Binding Balance}" FontSize="20" FontAttributes="Bold"
+                                   TextColor="#134016" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Income -->
+                    <Border Grid.Row="0" Grid.Column="1" 
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Revenus" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                            <Label Text="{Binding TotalIncome}" FontSize="20" FontAttributes="Bold"
+                                   TextColor="{StaticResource IncomeGreen}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Expenses -->
+                    <Border Grid.Row="1" Grid.Column="0" 
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Dépenses" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                            <Label Text="{Binding TotalExpenses}" FontSize="20" FontAttributes="Bold"
+                                   TextColor="{StaticResource ExpenseRed}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Transaction Count -->
+                    <Border Grid.Row="1" Grid.Column="1" 
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Transactions" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                            <Label Text="{Binding TransactionCount}" FontSize="20" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+            </Grid>
+        </ScrollView>
+
+        <!-- FAB: Add expense -->
+        <Button x:Name="FabButton"
+                Text="+ Dépense" 
+                FontSize="15"
+                FontAttributes="Bold"
+                BackgroundColor="#134016"
+                TextColor="White"
+                CornerRadius="28"
+                HeightRequest="56"
+                Padding="20,0"
+                HorizontalOptions="End" 
+                VerticalOptions="End" 
+                Margin="0,0,20,30"
+                Command="{Binding AddExpenseCommand}" />
+    </Grid>
+</ContentPage>

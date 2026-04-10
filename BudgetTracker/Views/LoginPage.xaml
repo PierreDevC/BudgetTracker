@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BudgetTracker.ViewModels"
+             x:Class="BudgetTracker.Views.LoginPage"
+             BackgroundColor="#F2F1EB"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.BindingContext>
+        <vm:LoginViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView Padding="24">
+        <VerticalStackLayout Spacing="16" VerticalOptions="Center">
+
+            <Label Text="💰" FontSize="60" HorizontalOptions="Center" />
+            <Label Text="BudgetTracker" Style="{StaticResource PageTitle}"
+                   HorizontalOptions="Center" />
+            <Label Text="Connectez-vous pour continuer" FontSize="14"
+                   TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"
+                   Margin="0,0,0,20" />
+
+            <VerticalStackLayout Spacing="14">
+
+                <Label Text="Courriel" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                <Border StrokeShape="RoundRectangle 40"
+                        StrokeThickness="0.5"
+                        Stroke="#AAAAAA"
+                        BackgroundColor="White"
+                        Padding="16,0">
+                    <Entry Placeholder="email@exemple.com"
+                           Text="{Binding Email}"
+                           Keyboard="Email"
+                           TextColor="Black"
+                           PlaceholderColor="#AAAAAA"
+                           BackgroundColor="Transparent" />
+                </Border>
+
+                <Label Text="Mot de passe" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                <Border StrokeShape="RoundRectangle 40"
+                        StrokeThickness="0.5"
+                        Stroke="#AAAAAA"
+                        BackgroundColor="White"
+                        Padding="16,0">
+                    <Entry Placeholder="••••••••"
+                           Text="{Binding Password}"
+                           IsPassword="True"
+                           TextColor="Black"
+                           PlaceholderColor="#AAAAAA"
+                           BackgroundColor="Transparent" />
+                </Border>
+
+                <Button Text="Se connecter"
+                        BackgroundColor="#134016"
+                        TextColor="White"
+                        CornerRadius="40"
+                        FontAttributes="Bold"
+                        HeightRequest="50"
+                        Command="{Binding LoginCommand}"
+                        Margin="0,10,0,0" />
+
+            </VerticalStackLayout>
+
+            <Button Text="Compte Démo"
+                    BackgroundColor="Transparent"
+                    TextColor="#134016"
+                    CornerRadius="40"
+                    BorderColor="#134016"
+                    BorderWidth="1.5"
+                    HeightRequest="50"
+                    Command="{Binding DemoCommand}" />
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                <Label Text="Pas de compte?" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                <Label Text="Créer un compte" TextColor="#134016" FontAttributes="Bold"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:BudgetTracker.Models"
+             x:Class="BudgetTracker.Views.TransactionsPage"
+             BackgroundColor="#F2F1EB"
+             Shell.NavBarIsVisible="False"
+             Title="Transactions">
+
+    <Grid>
+        <VerticalStackLayout Spacing="0">
+            <!-- Rounded Header -->
+            <Border Style="{StaticResource PageHeader}">
+                <Label Text="Transactions" Style="{StaticResource PageHeaderTitle}" />
+            </Border>
+
+            <Grid Padding="20" RowDefinitions="*">
+                <CollectionView x:Name="TransactionsList"
+                                Grid.Row="0" 
+                                ItemsSource="{Binding Transactions}" 
+                                SelectionMode="None"
+                                Scrolled="OnScrolled">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Transaction">
+                            <Border BackgroundColor="White"
+                                    StrokeShape="RoundRectangle 16"
+                                    StrokeThickness="0.5"
+                                    Stroke="#AAAAAA"
+                                    Margin="0,0,0,10" 
+                                    Padding="14">
+                                <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+
+                                    <!-- Icon circle -->
+                                    <Border Grid.RowSpan="2" WidthRequest="40" HeightRequest="40" 
+                                            StrokeShape="RoundRectangle 20"
+                                            Padding="0" BackgroundColor="#F2F1EB" StrokeThickness="0"
+                                            VerticalOptions="Center">
+                                        <Label Text="💳" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+
+                                    <!-- Name + category -->
+                                    <Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}"
+                                           FontSize="15" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                                    <Label Grid.Column="1" Grid.Row="1"
+                                           TextColor="{StaticResource TextSecondary}" FontSize="12">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} • {1:d MMM yyyy}">
+                                                <Binding Path="Category" />
+                                                <Binding Path="Date" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+
+                                    <!-- Amount -->
+                                    <Label Grid.Column="2" Grid.RowSpan="2" Text="{Binding DisplayAmount}"
+                                           FontSize="16" FontAttributes="Bold"
+                                           TextColor="{Binding AmountColor}"
+                                           VerticalOptions="Center" HorizontalOptions="End" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8">
+                            <Label Text="📝" FontSize="48" HorizontalOptions="Center" />
+                            <Label Text="Aucune transaction" FontSize="16"
+                                   TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- FAB -->
+        <Button x:Name="FabButton"
+                Text="+ Transaction" 
+                FontSize="15"
+                FontAttributes="Bold"
+                BackgroundColor="#134016"
+                TextColor="White"
+                CornerRadius="28"
+                HeightRequest="56"
+                Padding="20,0"
+                HorizontalOptions="End" 
+                VerticalOptions="End" 
+                Margin="0,0,20,30"
+                Command="{Binding AddTransactionCommand}" />
+    </Grid>
+</ContentPage>
