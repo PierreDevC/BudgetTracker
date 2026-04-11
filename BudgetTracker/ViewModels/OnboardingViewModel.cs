@@ -26,6 +26,7 @@ public class OnboardingViewModel : BaseViewModel
             OnPropertyChanged(nameof(Dot1Opacity));
             OnPropertyChanged(nameof(ShowNextButton));
             OnPropertyChanged(nameof(ShowSkipButton));
+            OnPropertyChanged(nameof(ShowBackButton));
         }
     }
 
@@ -37,6 +38,7 @@ public class OnboardingViewModel : BaseViewModel
 
     // "Terminer" only shows on step 1; selecting a goal advances step 0 automatically
     public bool ShowNextButton => CurrentStep == 1;
+    public bool ShowBackButton => CurrentStep == 1;
     // "Passer" only on step 0
     public bool ShowSkipButton => CurrentStep == 0;
 
@@ -70,6 +72,7 @@ public class OnboardingViewModel : BaseViewModel
     public ICommand SelectGoalCommand { get; }
     public ICommand NextCommand { get; }
     public ICommand SkipCommand { get; }
+    public ICommand BackCommand { get; }
 
     public OnboardingViewModel()
     {
@@ -82,6 +85,8 @@ public class OnboardingViewModel : BaseViewModel
         NextCommand = new Command(() => FinishOnboarding());
 
         SkipCommand = new Command(() => FinishOnboarding());
+
+        BackCommand = new Command(() => CurrentStep = 0);
     }
 
     void FinishOnboarding()

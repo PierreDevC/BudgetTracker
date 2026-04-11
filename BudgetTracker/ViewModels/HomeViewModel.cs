@@ -24,6 +24,7 @@ public class HomeViewModel : BaseViewModel
 
     public ICommand GoToProfileCommand { get; }
     public ICommand AddExpenseCommand { get; }
+    public ICommand AddRevenuCommand { get; }
     public ICommand GoToTransactionsCommand { get; }
 
     public HomeViewModel(Services.MockDataService data, IServiceProvider services)
@@ -45,6 +46,15 @@ public class HomeViewModel : BaseViewModel
         AddExpenseCommand = new Command(async () =>
         {
             var page = _services.GetRequiredService<Views.AddExpensePage>();
+            page.On<Microsoft.Maui.Controls.PlatformConfiguration.iOS>()
+                .SetModalPresentationStyle(
+                    Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific.UIModalPresentationStyle.PageSheet);
+            await Shell.Current.Navigation.PushModalAsync(page);
+        });
+
+        AddRevenuCommand = new Command(async () =>
+        {
+            var page = _services.GetRequiredService<Views.AddRevenuPage>();
             page.On<Microsoft.Maui.Controls.PlatformConfiguration.iOS>()
                 .SetModalPresentationStyle(
                     Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific.UIModalPresentationStyle.PageSheet);

@@ -51,7 +51,7 @@ public class MockDataService
         .Where(t => t.Type == TransactionType.Income && t.Date.Month == DateTime.Now.Month)
         .Sum(t => t.Amount);
 
-    public decimal Balance => MonthlyIncome - TotalExpenses;
+    public decimal Balance => MonthlyIncome + TotalIncome - TotalExpenses;
 
     public int TransactionCount => Transactions
         .Count(t => t.Date.Month == DateTime.Now.Month);

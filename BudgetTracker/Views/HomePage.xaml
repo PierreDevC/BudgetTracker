@@ -75,7 +75,8 @@
                                 FontFamily="InterBold"
                                 FontSize="14"
                                 CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
-                                HeightRequest="50" />
+                                HeightRequest="50"
+                                Command="{Binding AddRevenuCommand}" />
                         <Button Grid.Column="1"
                                 Text="+ Transaction"
                                 BackgroundColor="Transparent"
