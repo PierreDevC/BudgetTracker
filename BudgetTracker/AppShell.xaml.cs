@@ -4,7 +4,7 @@ public partial class AppShell : Shell
 {
     public AppShell()
     {
-        InitializeComponent();
+        this.InitializeComponent();
 
         Routing.RegisterRoute("profile", typeof(Views.ProfilePage));
     }

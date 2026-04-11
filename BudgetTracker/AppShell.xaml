@@ -5,9 +5,10 @@
        xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
        x:Class="BudgetTracker.AppShell"
        Shell.FlyoutBehavior="Disabled"
-       Shell.TabBarForegroundColor="#134016"
-       Shell.TabBarTitleColor="#134016"
-       Shell.TabBarUnselectedColor="Gray">
+       Shell.TabBarBackgroundColor="{OnPlatform Android=#134016, iOS=White}"
+       Shell.TabBarForegroundColor="{OnPlatform Android=White, iOS=#134016}"
+       Shell.TabBarTitleColor="{OnPlatform Android=White, iOS=#134016}"
+       Shell.TabBarUnselectedColor="{OnPlatform Android=#99FFFFFF, iOS=Gray}">
 
     <TabBar>
         <ShellContent Title="Accueil"
