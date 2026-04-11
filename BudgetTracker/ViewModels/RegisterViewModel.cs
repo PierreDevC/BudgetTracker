@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace BudgetTracker.ViewModels;
+
 public class RegisterViewModel : BaseViewModel
 {
+    readonly Services.AuthService _auth;
+    readonly IServiceProvider _services;
+
     string _name = string.Empty;
     public string Name { get => _name; set => SetProperty(ref _name, value); }
 
@@ -23,22 +22,39 @@ public class RegisterViewModel : BaseViewModel
     public ICommand RegisterCommand { get; }
     public ICommand BackToLoginCommand { get; }
 
-    public RegisterViewModel()
+    public RegisterViewModel(Services.AuthService auth, IServiceProvider services)
     {
+        _auth = auth;
+        _services = services;
+
         RegisterCommand = new Command(async () =>
         {
             if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Email) ||
                 string.IsNullOrWhiteSpace(Password))
             {
-                await Application.Current!.MainPage!.DisplayAlert("Erreur", "Veuillez remplir tous les champs.", "OK");
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Erreur", "Veuillez remplir tous les champs.", "OK");
                 return;
             }
             if (Password != ConfirmPassword)
             {
-                await Application.Current!.MainPage!.DisplayAlert("Erreur", "Les mots de passe ne correspondent pas.", "OK");
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Erreur", "Les mots de passe ne correspondent pas.", "OK");
                 return;
             }
-            Application.Current!.MainPage = new NavigationPage(new Views.OnboardingPage());
+
+            IsBusy = true;
+            var (success, error) = await _auth.RegisterAsync(Name, Email, Password);
+            IsBusy = false;
+
+            if (!success)
+            {
+                await Application.Current!.MainPage!.DisplayAlert("Erreur", error!, "OK");
+                return;
+            }
+
+            Application.Current!.MainPage = new NavigationPage(
+                _services.GetRequiredService<Views.OnboardingPage>());
         });
 
         BackToLoginCommand = new Command(async () =>

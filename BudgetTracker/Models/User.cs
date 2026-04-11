@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SQLite;
 
 namespace BudgetTracker.Models;
+
+[Table("Users")]
 public class User
 {
-    public string Name { get; set; } = string.Empty;
+    [PrimaryKey, AutoIncrement]
+    public int Id { get; set; }
+
+    [Unique]
     public string Email { get; set; } = string.Empty;
-    public string Goal { get; set; } = string.Empty;      // "but"
-    public string Reason { get; set; } = string.Empty;     // "raison"
+    public string Name { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
+    public string Salt { get; set; } = string.Empty;
+    public decimal MonthlyIncome { get; set; }
 }

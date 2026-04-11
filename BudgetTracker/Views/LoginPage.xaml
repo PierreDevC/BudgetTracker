@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:BudgetTracker.ViewModels"
              x:Class="BudgetTracker.Views.LoginPage"
              BackgroundColor="#F2F1EB"
              Shell.NavBarIsVisible="False"
              NavigationPage.HasNavigationBar="False">
-
-    <ContentPage.BindingContext>
-        <vm:LoginViewModel />
-    </ContentPage.BindingContext>
 
     <ScrollView Padding="24">
         <VerticalStackLayout Spacing="16" VerticalOptions="Center">
@@ -53,15 +48,6 @@
                         Margin="0,10,0,0" />
 
             </VerticalStackLayout>
-
-            <Button Text="Compte Démo"
-                    BackgroundColor="Transparent"
-                    TextColor="#134016"
-                    CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
-                    BorderColor="#134016"
-                    BorderWidth="1.5"
-                    HeightRequest="50"
-                    Command="{Binding DemoCommand}" />
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
                 <Label Text="Pas de compte?" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />

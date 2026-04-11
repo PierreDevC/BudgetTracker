@@ -2,8 +2,9 @@ namespace BudgetTracker.Views;
 
 public partial class OnboardingPage : ContentPage
 {
-	public OnboardingPage()
-	{
-		InitializeComponent();
-	}
+    public OnboardingPage(ViewModels.OnboardingViewModel vm)
+    {
+        InitializeComponent();
+        BindingContext = vm;
+    }
 }

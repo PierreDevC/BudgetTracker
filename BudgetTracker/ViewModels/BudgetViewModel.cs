@@ -5,13 +5,11 @@ using BudgetTracker.Services;
 
 namespace BudgetTracker.ViewModels;
 
-// Per-category display wrapper
 public class BudgetItemViewModel : BaseViewModel
 {
-    readonly MockDataService _data;
+    readonly DatabaseService _db;
 
     public BudgetCategory Category { get; }
-
     public string Name => Category.Name;
 
     public decimal Budgeted
@@ -26,7 +24,7 @@ public class BudgetItemViewModel : BaseViewModel
         }
     }
 
-    public decimal Spent => _data.Transactions
+    public decimal Spent => _db.Transactions
         .Where(t => t.Type == TransactionType.Expense &&
                     string.Equals(t.Category, Category.Name, StringComparison.OrdinalIgnoreCase) &&
                     t.Date.Month == DateTime.Now.Month &&
@@ -53,12 +51,14 @@ public class BudgetItemViewModel : BaseViewModel
         ? Color.FromArgb("#FF7675")
         : Color.FromArgb("#134016");
 
-    public string SpentSummary => $"Budget: {Budgeted:C}  •  Dépensé: {Spent:C}";
+    public string SpentSummary =>
+        $"Budget: {Budgeted.ToString("C", new System.Globalization.CultureInfo("fr-CA"))}  •  " +
+        $"Dépensé: {Spent.ToString("C", new System.Globalization.CultureInfo("fr-CA"))}";
 
-    public BudgetItemViewModel(BudgetCategory category, MockDataService data)
+    public BudgetItemViewModel(BudgetCategory category, DatabaseService db)
     {
         Category = category;
-        _data = data;
+        _db = db;
     }
 
     public void Refresh()
@@ -74,7 +74,7 @@ public class BudgetItemViewModel : BaseViewModel
 
 public class BudgetViewModel : BaseViewModel
 {
-    readonly MockDataService _data;
+    readonly DatabaseService _db;
 
     public ObservableCollection<BudgetItemViewModel> Categories { get; } = new();
 
@@ -83,17 +83,18 @@ public class BudgetViewModel : BaseViewModel
 
     public decimal TotalIncome
     {
-        get => _data.MonthlyIncome;
+        get => _db.CurrentUser?.MonthlyIncome ?? 0;
         set
         {
-            _data.MonthlyIncome = value;
+            if (_db.CurrentUser is null) return;
+            _db.CurrentUser.MonthlyIncome = value;
+            _ = _db.UpdateUserAsync();
             OnPropertyChanged(nameof(TotalIncome));
             RefreshTotals();
         }
     }
 
     public decimal TotalBudgeted => Categories.Sum(c => c.Budgeted);
-
     public decimal TotalRemaining => TotalIncome - TotalBudgeted;
 
     public Color TotalRemainingColor => TotalRemaining >= 0
@@ -124,12 +125,12 @@ public class BudgetViewModel : BaseViewModel
     public ICommand EditCategoryCommand { get; }
     public ICommand EditIncomeCommand { get; }
 
-    public BudgetViewModel(MockDataService data)
+    public BudgetViewModel(DatabaseService db)
     {
-        _data = data;
+        _db = db;
 
-        foreach (var cat in _data.BudgetCategories)
-            Categories.Add(new BudgetItemViewModel(cat, _data));
+        foreach (var cat in _db.BudgetCategories)
+            Categories.Add(new BudgetItemViewModel(cat, _db));
 
         Categories.CollectionChanged += (_, _) => RefreshTotals();
 
@@ -149,12 +150,13 @@ public class BudgetViewModel : BaseViewModel
                 if (decimal.TryParse(amountStr, out var amount))
                 {
                     item.Budgeted = amount;
+                    await _db.UpdateCategoryAsync(item.Category);
                     RefreshTotals();
                 }
             }
             else if (action == "Supprimer")
             {
-                _data.BudgetCategories.Remove(item.Category);
+                await _db.DeleteCategoryAsync(item.Category);
                 Categories.Remove(item);
             }
         });
@@ -171,18 +173,19 @@ public class BudgetViewModel : BaseViewModel
         });
     }
 
-    public void AddCategory(string name, decimal amount)
+    public async Task AddCategoryAsync(string name, decimal amount)
     {
         var cat = new BudgetCategory { Name = name, Amount = amount };
-        _data.BudgetCategories.Add(cat);
-        Categories.Add(new BudgetItemViewModel(cat, _data));
+        await _db.AddCategoryAsync(cat);
+        Categories.Add(new BudgetItemViewModel(cat, _db));
         RefreshTotals();
     }
 
     public void RefreshAll()
     {
-        foreach (var item in Categories)
-            item.Refresh();
+        Categories.Clear();
+        foreach (var cat in _db.BudgetCategories)
+            Categories.Add(new BudgetItemViewModel(cat, _db));
         RefreshTotals();
     }
 
@@ -191,6 +194,7 @@ public class BudgetViewModel : BaseViewModel
         OnPropertyChanged(nameof(TotalBudgeted));
         OnPropertyChanged(nameof(TotalRemaining));
         OnPropertyChanged(nameof(TotalRemainingColor));
+        OnPropertyChanged(nameof(TotalIncome));
         OnPropertyChanged(nameof(HasCategories));
         OnPropertyChanged(nameof(IsEmpty));
         OnPropertyChanged(nameof(InsightMessage));

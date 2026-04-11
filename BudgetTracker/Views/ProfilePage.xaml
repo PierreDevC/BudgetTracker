@@ -26,40 +26,7 @@
                     <Entry Text="{Binding Name}" Placeholder="Votre nom" />
 
                     <Label Text="Courriel" FontAttributes="Bold" />
-                    <Entry Text="{Binding Email}" Placeholder="Courriel" Keyboard="Email" />
-
-                    <Label Text="Objectif" FontAttributes="Bold" />
-                    <Entry Text="{Binding Goal}" Placeholder="Votre but financier" />
-
-                    <Label Text="Raison" FontAttributes="Bold" />
-                    <Entry Text="{Binding Reason}" Placeholder="Pourquoi BudgetTracker?" />
-                </VerticalStackLayout>
-            </Frame>
-
-            <!-- Settings section -->
-            <Label Text="Paramètres" Style="{StaticResource SectionTitle}" Margin="0,8,0,0" />
-            <Frame Style="{StaticResource CardFrame}" Padding="16">
-                <VerticalStackLayout Spacing="12">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                        <Label Grid.Column="0" FontSize="20" TextColor="{StaticResource Primary}" VerticalOptions="Center"
-                               Text="{mi:FluentFilled Icon=Alert24Filled}" />
-                        <Label Grid.Column="1" Text="Notifications" VerticalOptions="Center" />
-                        <Switch Grid.Column="2" IsToggled="True" OnColor="{StaticResource Primary}" />
-                    </Grid>
-                    <BoxView HeightRequest="1" Color="#E0E0E0" />
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                        <Label Grid.Column="0" FontSize="20" TextColor="{StaticResource Primary}" VerticalOptions="Center"
-                               Text="{mi:FluentFilled Icon=WeatherMoon24Filled}" />
-                        <Label Grid.Column="1" Text="Mode sombre" VerticalOptions="Center" />
-                        <Switch Grid.Column="2" IsToggled="False" OnColor="{StaticResource Primary}" />
-                    </Grid>
-                    <BoxView HeightRequest="1" Color="#E0E0E0" />
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                        <Label Grid.Column="0" FontSize="20" TextColor="{StaticResource Primary}" VerticalOptions="Center"
-                               Text="{mi:FluentFilled Icon=Money24Filled}" />
-                        <Label Grid.Column="1" Text="Devise" VerticalOptions="Center" />
-                        <Label Grid.Column="2" Text="CAD $" TextColor="{StaticResource TextSecondary}" />
-                    </Grid>
+                    <Entry Text="{Binding Email}" Placeholder="Courriel" Keyboard="Email" IsEnabled="False" />
                 </VerticalStackLayout>
             </Frame>
 
@@ -67,6 +34,26 @@
                     FontFamily="InterBold" FontSize="16"
                     CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
                     HeightRequest="52" Command="{Binding SaveCommand}" />
+
+            <!-- Change password -->
+            <Label Text="Mot de passe" Style="{StaticResource SectionTitle}" Margin="0,8,0,0" />
+            <Frame Style="{StaticResource CardFrame}" Padding="20">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Mot de passe actuel" FontAttributes="Bold" />
+                    <Entry Text="{Binding CurrentPassword}" Placeholder="••••••••" IsPassword="True" />
+
+                    <Label Text="Nouveau mot de passe" FontAttributes="Bold" />
+                    <Entry Text="{Binding NewPassword}" Placeholder="••••••••" IsPassword="True" />
+
+                    <Label Text="Confirmer le mot de passe" FontAttributes="Bold" />
+                    <Entry Text="{Binding ConfirmNewPassword}" Placeholder="••••••••" IsPassword="True" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Changer le mot de passe" BackgroundColor="#134016" TextColor="White"
+                    FontFamily="InterBold" FontSize="16"
+                    CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                    HeightRequest="52" Command="{Binding ChangePasswordCommand}" />
 
             <Button Text="Déconnexion" BackgroundColor="{StaticResource ExpenseRed}" TextColor="White"
                     FontFamily="InterBold" FontSize="16"

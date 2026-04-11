@@ -5,45 +5,29 @@ namespace BudgetTracker.ViewModels;
 
 public class AddExpenseViewModel : BaseViewModel
 {
-    readonly Services.MockDataService _data;
+    readonly Services.DatabaseService _db;
 
     string _name = string.Empty;
-    public string Name
-    {
-        get => _name;
-        set => SetProperty(ref _name, value);
-    }
+    public string Name { get => _name; set => SetProperty(ref _name, value); }
 
     string _amountText = string.Empty;
-    public string AmountText
-    {
-        get => _amountText;
-        set => SetProperty(ref _amountText, value);
-    }
+    public string AmountText { get => _amountText; set => SetProperty(ref _amountText, value); }
 
     int _selectedCategoryIndex = -1;
-    public int SelectedCategoryIndex
-    {
-        get => _selectedCategoryIndex;
-        set => SetProperty(ref _selectedCategoryIndex, value);
-    }
+    public int SelectedCategoryIndex { get => _selectedCategoryIndex; set => SetProperty(ref _selectedCategoryIndex, value); }
 
     DateTime _date = DateTime.Now;
-    public DateTime Date
-    {
-        get => _date;
-        set => SetProperty(ref _date, value);
-    }
+    public DateTime Date { get => _date; set => SetProperty(ref _date, value); }
 
     public List<string> Categories { get; }
 
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
 
-    public AddExpenseViewModel(Services.MockDataService data)
+    public AddExpenseViewModel(Services.DatabaseService db)
     {
-        _data = data;
-        Categories = _data.BudgetCategories.Select(c => c.Name).ToList();
+        _db = db;
+        Categories = _db.BudgetCategories.Select(c => c.Name).ToList();
 
         SaveCommand = new Command(async () =>
         {
@@ -62,7 +46,7 @@ public class AddExpenseViewModel : BaseViewModel
 
             string category = SelectedCategoryIndex >= 0 ? Categories[SelectedCategoryIndex] : "Autre";
 
-            _data.Transactions.Insert(0, new Transaction
+            await _db.AddTransactionAsync(new Transaction
             {
                 Name = Name,
                 Amount = amount,

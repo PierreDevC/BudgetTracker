@@ -101,13 +101,13 @@ public partial class BudgetPage : ContentPage
     private void OnOverlayTapped(object sender, TappedEventArgs e) => HideSheet();
     private void OnCancelSheet(object sender, EventArgs e) => HideSheet();
 
-    private void OnConfirmAdd(object sender, EventArgs e)
+    private async void OnConfirmAdd(object sender, EventArgs e)
     {
         var name = NameEntry.Text?.Trim();
         if (string.IsNullOrWhiteSpace(name)) return;
         if (!decimal.TryParse(AmountEntry.Text?.Trim(), out var amount) || amount <= 0) return;
 
-        ((ViewModels.BudgetViewModel)BindingContext).AddCategory(name, amount);
+        await ((ViewModels.BudgetViewModel)BindingContext).AddCategoryAsync(name, amount);
         HideSheet();
     }
 

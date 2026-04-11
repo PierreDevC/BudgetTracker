@@ -1,4 +1,4 @@
-﻿using MauiIcons.Fluent.Filled;
+using MauiIcons.Fluent.Filled;
 using Microsoft.Extensions.Logging;
 
 namespace BudgetTracker;
@@ -21,11 +21,12 @@ public static class MauiProgram
                 fonts.AddFont("Inter-Bold.ttf", "InterBold");
             });
 
-        // Services
-        builder.Services.AddSingleton<Services.MockDataService>();
+        // Services (singletons — hold shared state)
+        builder.Services.AddSingleton<Services.UserSession>();
+        builder.Services.AddSingleton<Services.DatabaseService>();
+        builder.Services.AddSingleton<Services.AuthService>();
 
         // ViewModels
-        builder.Services.AddTransient<ViewModels.SplashViewModel>();
         builder.Services.AddTransient<ViewModels.LoginViewModel>();
         builder.Services.AddTransient<ViewModels.RegisterViewModel>();
         builder.Services.AddTransient<ViewModels.OnboardingViewModel>();
@@ -49,6 +50,7 @@ public static class MauiProgram
         builder.Services.AddTransient<Views.ProfilePage>();
         builder.Services.AddTransient<Views.AddExpensePage>();
         builder.Services.AddTransient<Views.AddRevenuPage>();
+        builder.Services.AddSingleton<AppShell>();
 
 #if DEBUG
         builder.Logging.AddDebug();

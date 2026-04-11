@@ -2,8 +2,9 @@ namespace BudgetTracker.Views;
 
 public partial class LoginPage : ContentPage
 {
-    public LoginPage()
+    public LoginPage(ViewModels.LoginViewModel vm)
     {
         InitializeComponent();
+        BindingContext = vm;
     }
 }

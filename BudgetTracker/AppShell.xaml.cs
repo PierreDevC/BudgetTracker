@@ -1,11 +1,17 @@
-﻿namespace BudgetTracker;
+namespace BudgetTracker;
 
 public partial class AppShell : Shell
 {
-    public AppShell()
+    public AppShell(
+        Views.HomePage homePage,
+        Views.BudgetPage budgetPage,
+        Views.TransactionsPage transactionsPage,
+        Views.StatisticsPage statisticsPage)
     {
-        this.InitializeComponent();
-
-        Routing.RegisterRoute("profile", typeof(Views.ProfilePage));
+        InitializeComponent();
+        HomeTab.Content = homePage;
+        BudgetTab.Content = budgetPage;
+        TransactionsTab.Content = transactionsPage;
+        StatistiquesTab.Content = statisticsPage;
     }
 }

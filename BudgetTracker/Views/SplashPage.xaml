@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:BudgetTracker.ViewModels"
              x:Class="BudgetTracker.Views.SplashPage"
              BackgroundColor="{StaticResource Primary}"
              Shell.NavBarIsVisible="False">
-
-    <ContentPage.BindingContext>
-        <vm:SplashViewModel />
-    </ContentPage.BindingContext>
 
     <Grid VerticalOptions="Center" HorizontalOptions="Center" RowDefinitions="Auto,Auto,Auto">
         <Label Text="💰" FontSize="80" HorizontalOptions="Center" Grid.Row="0" />

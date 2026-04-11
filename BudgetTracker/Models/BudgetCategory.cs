@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SQLite;
 
 namespace BudgetTracker.Models;
+
+[Table("BudgetCategories")]
 public class BudgetCategory
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    [PrimaryKey, AutoIncrement]
+    public int Id { get; set; }
+    public int UserId { get; set; }
     public string Name { get; set; } = string.Empty;
     public decimal Amount { get; set; }
 }

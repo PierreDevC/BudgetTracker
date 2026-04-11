@@ -1,25 +1,25 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace BudgetTracker.ViewModels;
+
 public class TransactionsViewModel : BaseViewModel
 {
-    readonly Services.MockDataService _data;
+    readonly Services.DatabaseService _db;
     readonly IServiceProvider _services;
 
     public ObservableCollection<Models.Transaction> Transactions { get; } = new();
 
     public ICommand AddTransactionCommand { get; }
 
-    public TransactionsViewModel(Services.MockDataService data, IServiceProvider services)
+    public TransactionsViewModel(Services.DatabaseService db, IServiceProvider services)
     {
-        _data = data;
+        _db = db;
         _services = services;
         Title = "Transactions";
 
-        foreach (var t in _data.Transactions.OrderByDescending(t => t.Date))
+        foreach (var t in _db.Transactions.OrderByDescending(t => t.Date))
             Transactions.Add(t);
 
         AddTransactionCommand = new Command(async () =>
@@ -35,7 +35,7 @@ public class TransactionsViewModel : BaseViewModel
     public void Refresh()
     {
         Transactions.Clear();
-        foreach (var t in _data.Transactions.OrderByDescending(t => t.Date))
+        foreach (var t in _db.Transactions.OrderByDescending(t => t.Date))
             Transactions.Add(t);
     }
 }

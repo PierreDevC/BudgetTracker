@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:views="clr-namespace:BudgetTracker.Views"
        xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
        x:Class="BudgetTracker.AppShell"
        Shell.FlyoutBehavior="Disabled"
@@ -11,23 +10,22 @@
        Shell.TabBarUnselectedColor="{OnPlatform Android=#99FFFFFF, iOS=Gray}">
 
     <TabBar>
-        <ShellContent Title="Accueil"
+        <ShellContent x:Name="HomeTab"
+                      Title="Accueil"
                       Route="Accueil"
-                      Icon="{mi:FluentFilled Icon=Home24Filled}"
-                      ContentTemplate="{DataTemplate views:HomePage}" />
-        <ShellContent Title="Budget"
+                      Icon="{mi:FluentFilled Icon=Home24Filled}" />
+        <ShellContent x:Name="BudgetTab"
+                      Title="Budget"
                       Route="Budget"
-                      Icon="{mi:FluentFilled Icon=ClipboardTextLtr24Filled}"
-                      ContentTemplate="{DataTemplate views:BudgetPage}" />
-        <ShellContent Title="Transactions"
+                      Icon="{mi:FluentFilled Icon=ClipboardTextLtr24Filled}" />
+        <ShellContent x:Name="TransactionsTab"
+                      Title="Transactions"
                       Route="Transactions"
-                      Icon="{mi:FluentFilled Icon=Receipt24Filled}"
-                      ContentTemplate="{DataTemplate views:TransactionsPage}" />
-        <ShellContent Title="Statistiques"
+                      Icon="{mi:FluentFilled Icon=Receipt24Filled}" />
+        <ShellContent x:Name="StatistiquesTab"
+                      Title="Statistiques"
                       Route="Statistiques"
-                      Icon="{mi:FluentFilled Icon=ChartMultiple24Filled}"
-                      ContentTemplate="{DataTemplate views:StatisticsPage}" />
+                      Icon="{mi:FluentFilled Icon=ChartMultiple24Filled}" />
     </TabBar>
 
-    <!-- Registered routes for non-tab pages -->
 </Shell>

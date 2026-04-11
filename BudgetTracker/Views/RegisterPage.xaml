@@ -6,10 +6,6 @@
              BackgroundColor="#F2F1EB"
              NavigationPage.HasNavigationBar="False">
 
-    <ContentPage.BindingContext>
-        <vm:RegisterViewModel />
-    </ContentPage.BindingContext>
-
     <ScrollView Padding="24">
         <VerticalStackLayout Spacing="16" VerticalOptions="Center">
 

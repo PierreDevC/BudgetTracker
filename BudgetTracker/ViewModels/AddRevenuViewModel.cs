@@ -5,35 +5,23 @@ namespace BudgetTracker.ViewModels;
 
 public class AddRevenuViewModel : BaseViewModel
 {
-    readonly Services.MockDataService _data;
+    readonly Services.DatabaseService _db;
 
     string _name = string.Empty;
-    public string Name
-    {
-        get => _name;
-        set => SetProperty(ref _name, value);
-    }
+    public string Name { get => _name; set => SetProperty(ref _name, value); }
 
     string _amountText = string.Empty;
-    public string AmountText
-    {
-        get => _amountText;
-        set => SetProperty(ref _amountText, value);
-    }
+    public string AmountText { get => _amountText; set => SetProperty(ref _amountText, value); }
 
     DateTime _date = DateTime.Now;
-    public DateTime Date
-    {
-        get => _date;
-        set => SetProperty(ref _date, value);
-    }
+    public DateTime Date { get => _date; set => SetProperty(ref _date, value); }
 
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
 
-    public AddRevenuViewModel(Services.MockDataService data)
+    public AddRevenuViewModel(Services.DatabaseService db)
     {
-        _data = data;
+        _db = db;
 
         SaveCommand = new Command(async () =>
         {
@@ -50,7 +38,7 @@ public class AddRevenuViewModel : BaseViewModel
                 return;
             }
 
-            _data.Transactions.Insert(0, new Transaction
+            await _db.AddTransactionAsync(new Transaction
             {
                 Name = Name,
                 Amount = amount,
