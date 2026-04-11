@@ -3,22 +3,48 @@ using System.Windows.Input;
 
 namespace BudgetTracker.ViewModels;
 
+/// <summary>
+/// ViewModel pour l'ajout d'un nouveau revenu.
+/// Auteur : Pierre
+/// </summary>
 public class AddRevenuViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Instance du service de base de données.
+    /// </summary>
     readonly Services.DatabaseService _db;
 
     string _name = string.Empty;
+    /// <summary>
+    /// Obtient ou définit le nom du revenu.
+    /// </summary>
     public string Name { get => _name; set => SetProperty(ref _name, value); }
 
     string _amountText = string.Empty;
+    /// <summary>
+    /// Obtient ou définit le texte du montant du revenu.
+    /// </summary>
     public string AmountText { get => _amountText; set => SetProperty(ref _amountText, value); }
 
     DateTime _date = DateTime.Now;
+    /// <summary>
+    /// Obtient ou définit la date du revenu.
+    /// </summary>
     public DateTime Date { get => _date; set => SetProperty(ref _date, value); }
 
+    /// <summary>
+    /// Commande pour sauvegarder le revenu.
+    /// </summary>
     public ICommand SaveCommand { get; }
+
+    /// <summary>
+    /// Commande pour annuler l'opération.
+    /// </summary>
     public ICommand CancelCommand { get; }
 
+    /// <summary>
+    /// Initialise une nouvelle instance de AddRevenuViewModel.
+    /// </summary>
     public AddRevenuViewModel(Services.DatabaseService db)
     {
         _db = db;

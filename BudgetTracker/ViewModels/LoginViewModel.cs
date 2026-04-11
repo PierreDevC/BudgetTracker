@@ -1,21 +1,48 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 
 namespace BudgetTracker.ViewModels;
 
+/// <summary>
+/// ViewModel pour la connexion de l'utilisateur.
+/// Auteur : Pierre
+/// </summary>
 public class LoginViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Instance du service d'authentification.
+    /// </summary>
     readonly Services.AuthService _auth;
+
+    /// <summary>
+    /// Instance du fournisseur de services.
+    /// </summary>
     readonly IServiceProvider _services;
 
     string _email = string.Empty;
+    /// <summary>
+    /// Obtient ou définit l'adresse e-mail.
+    /// </summary>
     public string Email { get => _email; set => SetProperty(ref _email, value); }
 
     string _password = string.Empty;
+    /// <summary>
+    /// Obtient ou définit le mot de passe.
+    /// </summary>
     public string Password { get => _password; set => SetProperty(ref _password, value); }
 
+    /// <summary>
+    /// Commande pour se connecter.
+    /// </summary>
     public ICommand LoginCommand { get; }
+
+    /// <summary>
+    /// Commande pour aller à la page d'inscription.
+    /// </summary>
     public ICommand GoToRegisterCommand { get; }
 
+    /// <summary>
+    /// Initialise une nouvelle instance de LoginViewModel.
+    /// </summary>
     public LoginViewModel(Services.AuthService auth, IServiceProvider services)
     {
         _auth = auth;

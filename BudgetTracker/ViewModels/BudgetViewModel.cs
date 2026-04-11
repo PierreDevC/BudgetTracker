@@ -5,13 +5,30 @@ using BudgetTracker.Services;
 
 namespace BudgetTracker.ViewModels;
 
+/// <summary>
+/// ViewModel pour un élément de budget individuel.
+/// Auteur : Pierre
+/// </summary>
 public class BudgetItemViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Instance du service de base de données.
+    /// </summary>
     readonly DatabaseService _db;
 
+    /// <summary>
+    /// Obtient la catégorie de budget.
+    /// </summary>
     public BudgetCategory Category { get; }
+
+    /// <summary>
+    /// Obtient le nom de la catégorie.
+    /// </summary>
     public string Name => Category.Name;
 
+    /// <summary>
+    /// Obtient ou définit le montant alloué.
+    /// </summary>
     public decimal Budgeted
     {
         get => Category.Amount;
@@ -24,6 +41,9 @@ public class BudgetItemViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Obtient le montant dépensé.
+    /// </summary>
     public decimal Spent => _db.Transactions
         .Where(t => t.Type == TransactionType.Expense &&
                     string.Equals(t.Category, Category.Name, StringComparison.OrdinalIgnoreCase) &&
@@ -31,10 +51,19 @@ public class BudgetItemViewModel : BaseViewModel
                     t.Date.Year == DateTime.Now.Year)
         .Sum(t => t.Amount);
 
+    /// <summary>
+    /// Obtient le budget restant.
+    /// </summary>
     public decimal Remaining => Budgeted - Spent;
 
+    /// <summary>
+    /// Obtient le ratio de progression du budget.
+    /// </summary>
     public double Progress => Budgeted == 0 ? 0 : Math.Min((double)(Spent / Budgeted), 1.0);
 
+    /// <summary>
+    /// Obtient la couleur de progression selon le ratio.
+    /// </summary>
     public Color ProgressColor
     {
         get
@@ -47,20 +76,32 @@ public class BudgetItemViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Obtient la couleur pour le montant restant.
+    /// </summary>
     public Color RemainingColor => Remaining < 0
         ? Color.FromArgb("#FF7675")
         : Color.FromArgb("#134016");
 
+    /// <summary>
+    /// Obtient la chaîne de résumé pour dépensé contre budget.
+    /// </summary>
     public string SpentSummary =>
         $"Budget: {Budgeted.ToString("C", new System.Globalization.CultureInfo("fr-CA"))}  •  " +
         $"Dépensé: {Spent.ToString("C", new System.Globalization.CultureInfo("fr-CA"))}";
 
+    /// <summary>
+    /// Initialise une nouvelle instance de BudgetItemViewModel.
+    /// </summary>
     public BudgetItemViewModel(BudgetCategory category, DatabaseService db)
     {
         Category = category;
         _db = db;
     }
 
+    /// <summary>
+    /// Rafraîchit toutes les propriétés calculées.
+    /// </summary>
     public void Refresh()
     {
         OnPropertyChanged(nameof(Spent));
@@ -72,15 +113,31 @@ public class BudgetItemViewModel : BaseViewModel
     }
 }
 
+/// <summary>
+/// ViewModel pour gérer le budget global.
+/// Auteur : Pierre
+/// </summary>
 public class BudgetViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Instance du service de base de données.
+    /// </summary>
     readonly DatabaseService _db;
 
+    /// <summary>
+    /// Obtient la liste des catégories de budget.
+    /// </summary>
     public ObservableCollection<BudgetItemViewModel> Categories { get; } = new();
 
+    /// <summary>
+    /// Obtient le titre du mois en cours.
+    /// </summary>
     public string MonthTitle =>
         $"Budget de {DateTime.Now.ToString("MMMM", new System.Globalization.CultureInfo("fr-CA"))}";
 
+    /// <summary>
+    /// Obtient ou définit le revenu mensuel total.
+    /// </summary>
     public decimal TotalIncome
     {
         get => _db.CurrentUser?.MonthlyIncome ?? 0;
@@ -94,16 +151,36 @@ public class BudgetViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Obtient le montant budgétisé total.
+    /// </summary>
     public decimal TotalBudgeted => Categories.Sum(c => c.Budgeted);
+
+    /// <summary>
+    /// Obtient le budget restant total.
+    /// </summary>
     public decimal TotalRemaining => TotalIncome - TotalBudgeted;
 
+    /// <summary>
+    /// Obtient la couleur pour le budget restant total.
+    /// </summary>
     public Color TotalRemainingColor => TotalRemaining >= 0
         ? Color.FromArgb("#134016")
         : Color.FromArgb("#FF7675");
 
+    /// <summary>
+    /// Obtient une valeur indiquant s'il y a des catégories.
+    /// </summary>
     public bool HasCategories => Categories.Count > 0;
+
+    /// <summary>
+    /// Obtient une valeur indiquant si la liste des catégories est vide.
+    /// </summary>
     public bool IsEmpty => !HasCategories;
 
+    /// <summary>
+    /// Obtient un message d'aperçu sur l'état du budget.
+    /// </summary>
     public string InsightMessage
     {
         get
@@ -120,11 +197,24 @@ public class BudgetViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Obtient une valeur indiquant s'il y a un message d'aperçu.
+    /// </summary>
     public bool HasInsight => !string.IsNullOrEmpty(InsightMessage);
 
+    /// <summary>
+    /// Commande pour éditer une catégorie.
+    /// </summary>
     public ICommand EditCategoryCommand { get; }
+
+    /// <summary>
+    /// Commande pour éditer le revenu total.
+    /// </summary>
     public ICommand EditIncomeCommand { get; }
 
+    /// <summary>
+    /// Initialise une nouvelle instance de BudgetViewModel.
+    /// </summary>
     public BudgetViewModel(DatabaseService db)
     {
         _db = db;
@@ -173,6 +263,9 @@ public class BudgetViewModel : BaseViewModel
         });
     }
 
+    /// <summary>
+    /// Ajoute une nouvelle catégorie de manière asynchrone.
+    /// </summary>
     public async Task AddCategoryAsync(string name, decimal amount)
     {
         var cat = new BudgetCategory { Name = name, Amount = amount };
@@ -181,6 +274,9 @@ public class BudgetViewModel : BaseViewModel
         RefreshTotals();
     }
 
+    /// <summary>
+    /// Rafraîchit toutes les catégories et les totaux.
+    /// </summary>
     public void RefreshAll()
     {
         Categories.Clear();
@@ -189,6 +285,9 @@ public class BudgetViewModel : BaseViewModel
         RefreshTotals();
     }
 
+    /// <summary>
+    /// Rafraîchit les valeurs totales.
+    /// </summary>
     void RefreshTotals()
     {
         OnPropertyChanged(nameof(TotalBudgeted));
