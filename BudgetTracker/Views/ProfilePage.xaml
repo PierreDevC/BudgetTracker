@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
              x:Class="BudgetTracker.Views.ProfilePage"
              BackgroundColor="{StaticResource Background}"
              Title="Profil">
@@ -12,7 +13,8 @@
             <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40"
                    BackgroundColor="{StaticResource Primary}" Padding="0"
                    HorizontalOptions="Center" HasShadow="False" Margin="0,20,0,0">
-                <Label Text="👤" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Label FontSize="36" HorizontalOptions="Center" VerticalOptions="Center"
+                       Text="{mi:FluentFilled Icon=Person24Filled}" TextColor="White" />
             </Frame>
 
             <Label Text="Mon Profil" Style="{StaticResource PageTitle}" HorizontalOptions="Center" />
@@ -38,19 +40,25 @@
             <Label Text="Paramètres" Style="{StaticResource SectionTitle}" Margin="0,8,0,0" />
             <Frame Style="{StaticResource CardFrame}" Padding="16">
                 <VerticalStackLayout Spacing="12">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <Label Text="Notifications" VerticalOptions="Center" />
-                        <Switch Grid.Column="1" IsToggled="True" OnColor="{StaticResource Primary}" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0" FontSize="20" TextColor="{StaticResource Primary}" VerticalOptions="Center"
+                               Text="{mi:FluentFilled Icon=Alert24Filled}" />
+                        <Label Grid.Column="1" Text="Notifications" VerticalOptions="Center" />
+                        <Switch Grid.Column="2" IsToggled="True" OnColor="{StaticResource Primary}" />
                     </Grid>
                     <BoxView HeightRequest="1" Color="#E0E0E0" />
-                    <Grid ColumnDefinitions="*,Auto">
-                        <Label Text="Mode sombre" VerticalOptions="Center" />
-                        <Switch Grid.Column="1" IsToggled="False" OnColor="{StaticResource Primary}" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0" FontSize="20" TextColor="{StaticResource Primary}" VerticalOptions="Center"
+                               Text="{mi:FluentFilled Icon=WeatherMoon24Filled}" />
+                        <Label Grid.Column="1" Text="Mode sombre" VerticalOptions="Center" />
+                        <Switch Grid.Column="2" IsToggled="False" OnColor="{StaticResource Primary}" />
                     </Grid>
                     <BoxView HeightRequest="1" Color="#E0E0E0" />
-                    <Grid ColumnDefinitions="*,Auto">
-                        <Label Text="Devise" VerticalOptions="Center" />
-                        <Label Grid.Column="1" Text="CAD $" TextColor="{StaticResource TextSecondary}" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0" FontSize="20" TextColor="{StaticResource Primary}" VerticalOptions="Center"
+                               Text="{mi:FluentFilled Icon=Money24Filled}" />
+                        <Label Grid.Column="1" Text="Devise" VerticalOptions="Center" />
+                        <Label Grid.Column="2" Text="CAD $" TextColor="{StaticResource TextSecondary}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>

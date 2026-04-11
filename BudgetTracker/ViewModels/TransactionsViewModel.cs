@@ -62,4 +62,11 @@ public class TransactionsViewModel : BaseViewModel
             Transactions.Insert(0, tx);
         });
     }
+
+    public void Refresh()
+    {
+        Transactions.Clear();
+        foreach (var t in _data.Transactions.OrderByDescending(t => t.Date))
+            Transactions.Add(t);
+    }
 }

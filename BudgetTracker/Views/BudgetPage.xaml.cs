@@ -16,6 +16,12 @@ public partial class BudgetPage : ContentPage
         BindingContext = vm;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        (BindingContext as ViewModels.BudgetViewModel)?.RefreshAll();
+    }
+
     // ── FAB scroll behaviour ──────────────────────────────────────────────────
 
     private void OnScrolled(object sender, ScrolledEventArgs e)

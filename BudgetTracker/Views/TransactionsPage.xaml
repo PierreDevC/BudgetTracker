@@ -8,13 +8,13 @@
              Title="Transactions">
 
     <Grid>
-        <VerticalStackLayout Spacing="0">
+        <Grid RowDefinitions="Auto,*">
             <!-- Rounded Header -->
-            <Border Style="{StaticResource PageHeader}">
+            <Border Grid.Row="0" Style="{StaticResource PageHeader}">
                 <Label Text="Transactions" Style="{StaticResource PageHeaderTitle}" />
             </Border>
 
-            <Grid Padding="20" RowDefinitions="*">
+            <Grid Grid.Row="1" Padding="20" RowDefinitions="*">
                 <CollectionView x:Name="TransactionsList"
                                 Grid.Row="0" 
                                 ItemsSource="{Binding Transactions}" 
@@ -62,15 +62,17 @@
                     </CollectionView.ItemTemplate>
 
                     <CollectionView.EmptyView>
-                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8">
-                            <Label Text="📝" FontSize="48" HorizontalOptions="Center" />
-                            <Label Text="Aucune transaction" FontSize="16"
-                                   TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center" />
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                            <Label Text="Aucune transaction" FontSize="20" FontFamily="MerriweatherBold"
+                                   TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" />
+                            <Label Text="Appuyez sur + Transaction pour commencer."
+                                   FontSize="14" TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
                 </CollectionView>
             </Grid>
-        </VerticalStackLayout>
+        </Grid>
 
         <!-- FAB -->
         <Button x:Name="FabButton"

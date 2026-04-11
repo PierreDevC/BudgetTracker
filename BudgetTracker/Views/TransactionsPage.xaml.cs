@@ -12,6 +12,12 @@ public partial class TransactionsPage : ContentPage
         BindingContext = vm;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        (BindingContext as ViewModels.TransactionsViewModel)?.Refresh();
+    }
+
     private void OnScrolled(object sender, ItemsViewScrolledEventArgs e)
     {
         bool scrollingDown = e.VerticalOffset > _lastScrollY + 2;

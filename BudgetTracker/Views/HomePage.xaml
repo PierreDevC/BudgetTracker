@@ -2,99 +2,187 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:BudgetTracker.ViewModels"
+             xmlns:models="clr-namespace:BudgetTracker.Models"
+             xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
              x:Class="BudgetTracker.Views.HomePage"
              BackgroundColor="#F2F1EB"
              Shell.NavBarIsVisible="False">
 
     <Grid>
         <ScrollView x:Name="MainScroll" Scrolled="OnScrolled">
-            <Grid Padding="20,20,20,100" RowDefinitions="Auto,Auto,Auto,*">
+            <Grid Padding="20,20,20,100" RowDefinitions="Auto,Auto,Auto">
 
-                <!-- Header: greeting + profile icon -->
-                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,20,0,16">
-                    <VerticalStackLayout>
-                        <Label Text="{Binding UserName, StringFormat='Bonjour, {0} 👋'}" FontSize="24"
-                               FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
-                        <Label Text="Voici votre sommaire du mois" FontSize="14"
-                               TextColor="{StaticResource TextSecondary}" />
-                    </VerticalStackLayout>
-                    <Border Grid.Column="1" WidthRequest="44" HeightRequest="44" 
+                <!-- Search Bar + Profile Icon -->
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="0,20,0,16">
+                    <Border Grid.Column="0"
+                            StrokeShape="RoundRectangle 40"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            BackgroundColor="White"
+                            Padding="16,0"
+                            VerticalOptions="Center">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <Label Grid.Column="0" VerticalOptions="Center" FontSize="18" TextColor="#AAAAAA"
+                                   Text="{mi:FluentFilled Icon=Search24Filled}" />
+                            <Entry Grid.Column="1"
+                                   Placeholder="Rechercher..."
+                                   PlaceholderColor="#AAAAAA"
+                                   TextColor="Black"
+                                   BackgroundColor="Transparent" />
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" WidthRequest="44" HeightRequest="44"
                             StrokeShape="RoundRectangle 22"
                             Padding="0" BackgroundColor="#134016" StrokeThickness="0">
-                        <Label Text="👤" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Label FontSize="22" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"
+                               Text="{mi:FluentFilled Icon=Person24Filled}" />
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToProfileCommand}" />
                         </Border.GestureRecognizers>
                     </Border>
                 </Grid>
 
-                <!-- 4 Summary Cards -->
-                <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
-                      ColumnSpacing="12" RowSpacing="12" Margin="0,0,0,16">
+                <!-- Greeting -->
+                <VerticalStackLayout Grid.Row="1" Spacing="4" Margin="0,0,0,16">
+                    <Label Text="{Binding UserName, StringFormat='Bonjour, {0} 👋'}" FontSize="24"
+                           FontFamily="MerriweatherBold" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="Voici votre sommaire du mois" FontSize="14"
+                           TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
 
-                    <!-- Balance -->
-                    <Border Grid.Row="0" Grid.Column="0" 
-                            BackgroundColor="White"
-                            StrokeShape="RoundRectangle 16"
-                            StrokeThickness="0.5"
-                            Stroke="#AAAAAA"
-                            Padding="16">
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Solde" FontSize="12" TextColor="{StaticResource TextSecondary}" />
-                            <Label Text="{Binding Balance}" FontSize="20" FontAttributes="Bold"
-                                   TextColor="#134016" />
+                <!-- Main content -->
+                <VerticalStackLayout Grid.Row="2" Spacing="12">
+
+                    <!-- Balance — hero card -->
+                    <Border BackgroundColor="#134016"
+                            StrokeShape="RoundRectangle 20"
+                            StrokeThickness="0.8"
+                            Stroke="#1E5C22"
+                            Padding="24,28">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Solde du mois" FontSize="13" FontFamily="InterRegular" TextColor="#AAFFAA" />
+                            <Label Text="{Binding Balance}" FontSize="36" FontFamily="InterBold"
+                                   FontAttributes="Bold" TextColor="White" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Income -->
-                    <Border Grid.Row="0" Grid.Column="1" 
-                            BackgroundColor="White"
+                    <!-- Action Buttons -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Button Grid.Column="0"
+                                Text="+ Revenu"
+                                BackgroundColor="#134016"
+                                TextColor="White"
+                                FontFamily="InterBold"
+                                FontSize="14"
+                                CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                                HeightRequest="50" />
+                        <Button Grid.Column="1"
+                                Text="+ Transaction"
+                                BackgroundColor="Transparent"
+                                TextColor="#134016"
+                                BorderColor="#134016"
+                                BorderWidth="1.5"
+                                FontFamily="InterBold"
+                                FontSize="14"
+                                CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                                HeightRequest="50"
+                                Command="{Binding AddExpenseCommand}" />
+                    </Grid>
+
+                    <!-- Revenus + Dépenses cards -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border Grid.Column="0"
+                                BackgroundColor="White"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0.5"
+                                Stroke="#AAAAAA"
+                                Padding="14">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Revenus" FontSize="11" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding TotalIncome}" FontSize="15" FontAttributes="Bold"
+                                       TextColor="{StaticResource IncomeGreen}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1"
+                                BackgroundColor="White"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0.5"
+                                Stroke="#AAAAAA"
+                                Padding="14">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Dépenses" FontSize="11" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding TotalExpenses}" FontSize="15" FontAttributes="Bold"
+                                       TextColor="{StaticResource ExpenseRed}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- Transactions récentes header -->
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,4">
+                        <Label Grid.Column="0" Text="Transactions récentes" FontSize="16"
+                               FontFamily="MerriweatherBold" TextColor="{StaticResource TextPrimary}" />
+                        <Label Grid.Column="1" Text="Voir tout" FontSize="13"
+                               TextColor="#134016" VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToTransactionsCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+
+                    <!-- Transaction list -->
+                    <Border BackgroundColor="White"
                             StrokeShape="RoundRectangle 16"
                             StrokeThickness="0.5"
                             Stroke="#AAAAAA"
-                            Padding="16">
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Revenus" FontSize="12" TextColor="{StaticResource TextSecondary}" />
-                            <Label Text="{Binding TotalIncome}" FontSize="20" FontAttributes="Bold"
-                                   TextColor="{StaticResource IncomeGreen}" />
+                            Padding="16,4"
+                            IsVisible="{Binding HasTransactions}">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecentTransactions}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:Transaction">
+                                    <VerticalStackLayout>
+                                        <Grid ColumnDefinitions="*,Auto" Padding="0,12" ColumnSpacing="8">
+                                            <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                                <Label Text="{Binding Name}" FontSize="14"
+                                                       TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" />
+                                                <Label Text="{Binding Category}" FontSize="12"
+                                                       TextColor="{StaticResource TextSecondary}" />
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="1" Text="{Binding DisplayAmount}"
+                                                   FontSize="14" FontAttributes="Bold"
+                                                   TextColor="{Binding AmountColor}"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                        <BoxView HeightRequest="0.5" Color="#EBEBEB" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Expenses -->
-                    <Border Grid.Row="1" Grid.Column="0" 
-                            BackgroundColor="White"
+                    <!-- Empty state -->
+                    <Border BackgroundColor="White"
                             StrokeShape="RoundRectangle 16"
                             StrokeThickness="0.5"
                             Stroke="#AAAAAA"
-                            Padding="16">
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Dépenses" FontSize="12" TextColor="{StaticResource TextSecondary}" />
-                            <Label Text="{Binding TotalExpenses}" FontSize="20" FontAttributes="Bold"
-                                   TextColor="{StaticResource ExpenseRed}" />
+                            Padding="24,28"
+                            IsVisible="{Binding NoTransactions}">
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                            <Label Text="Aucune transaction" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" />
+                            <Label Text="Appuyez sur + Transaction pour commencer"
+                                   FontSize="13" TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Transaction Count -->
-                    <Border Grid.Row="1" Grid.Column="1" 
-                            BackgroundColor="White"
-                            StrokeShape="RoundRectangle 16"
-                            StrokeThickness="0.5"
-                            Stroke="#AAAAAA"
-                            Padding="16">
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Transactions" FontSize="12" TextColor="{StaticResource TextSecondary}" />
-                            <Label Text="{Binding TransactionCount}" FontSize="20" FontAttributes="Bold"
-                                   TextColor="{StaticResource TextPrimary}" />
-                        </VerticalStackLayout>
-                    </Border>
-                </Grid>
+                </VerticalStackLayout>
 
             </Grid>
         </ScrollView>
 
-        <!-- FAB: Add expense -->
+        <!-- FAB: Add transaction -->
         <Button x:Name="FabButton"
-                Text="+ Dépense" 
+                Text="+ Transaction"
                 FontSize="15"
                 FontAttributes="Bold"
                 BackgroundColor="#134016"
@@ -102,8 +190,8 @@
                 CornerRadius="28"
                 HeightRequest="56"
                 Padding="20,0"
-                HorizontalOptions="End" 
-                VerticalOptions="End" 
+                HorizontalOptions="End"
+                VerticalOptions="End"
                 Margin="0,0,20,30"
                 Command="{Binding AddExpenseCommand}" />
     </Grid>

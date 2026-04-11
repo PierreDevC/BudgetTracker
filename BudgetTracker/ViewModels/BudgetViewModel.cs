@@ -179,6 +179,13 @@ public class BudgetViewModel : BaseViewModel
         RefreshTotals();
     }
 
+    public void RefreshAll()
+    {
+        foreach (var item in Categories)
+            item.Refresh();
+        RefreshTotals();
+    }
+
     void RefreshTotals()
     {
         OnPropertyChanged(nameof(TotalBudgeted));

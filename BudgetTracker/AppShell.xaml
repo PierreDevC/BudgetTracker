@@ -4,19 +4,26 @@
        xmlns:views="clr-namespace:BudgetTracker.Views"
        xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
        x:Class="BudgetTracker.AppShell"
-       Shell.FlyoutBehavior="Disabled">
+       Shell.FlyoutBehavior="Disabled"
+       Shell.TabBarForegroundColor="#134016"
+       Shell.TabBarTitleColor="#134016"
+       Shell.TabBarUnselectedColor="Gray">
 
     <TabBar>
         <ShellContent Title="Accueil"
+                      Route="Accueil"
                       Icon="{mi:FluentFilled Icon=Home24Filled}"
                       ContentTemplate="{DataTemplate views:HomePage}" />
         <ShellContent Title="Budget"
+                      Route="Budget"
                       Icon="{mi:FluentFilled Icon=ClipboardTextLtr24Filled}"
                       ContentTemplate="{DataTemplate views:BudgetPage}" />
         <ShellContent Title="Transactions"
+                      Route="Transactions"
                       Icon="{mi:FluentFilled Icon=Receipt24Filled}"
                       ContentTemplate="{DataTemplate views:TransactionsPage}" />
         <ShellContent Title="Statistiques"
+                      Route="Statistiques"
                       Icon="{mi:FluentFilled Icon=ChartMultiple24Filled}"
                       ContentTemplate="{DataTemplate views:StatisticsPage}" />
     </TabBar>

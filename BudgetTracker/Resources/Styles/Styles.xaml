@@ -419,7 +419,7 @@
     <Style x:Key="PageHeader" TargetType="Border">
         <Setter Property="BackgroundColor" Value="#134016" />
         <Setter Property="StrokeThickness" Value="0" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 0,0,24,24" />
+        <Setter Property="StrokeShape" Value="Rectangle" />
         <Setter Property="HeightRequest" Value="60" />
         <Setter Property="Padding" Value="20,0" />
         <Setter Property="VerticalOptions" Value="Start" />

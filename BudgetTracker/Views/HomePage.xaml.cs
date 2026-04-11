@@ -47,7 +47,7 @@ public partial class HomePage : ContentPage
 
     private void ExpandFab()
     {
-        FabButton.Text = "+ Dépense";
+        FabButton.Text = "+ Transaction";
 
         var anim = new Animation(v => FabButton.WidthRequest = v, 56, _expandedWidth);
         anim.Commit(this, "FabExpand", 16, 200, Easing.CubicInOut,

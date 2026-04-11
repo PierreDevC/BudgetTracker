@@ -8,96 +8,19 @@
              Title="Statistiques">
 
     <Grid>
-        <VerticalStackLayout Spacing="0">
+        <Grid RowDefinitions="Auto,*">
             <!-- Rounded Header -->
-            <Border Style="{StaticResource PageHeader}">
+            <Border Grid.Row="0" Style="{StaticResource PageHeader}">
                 <Label Text="Statistiques" Style="{StaticResource PageHeaderTitle}" />
             </Border>
 
-            <ScrollView Padding="20">
-                <VerticalStackLayout Spacing="16">
-
-                    <!-- Top summary cards -->
-                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                        <Border Grid.Column="0" 
-                                BackgroundColor="White"
-                                StrokeShape="RoundRectangle 12"
-                                StrokeThickness="0.5"
-                                Stroke="#AAAAAA"
-                                Padding="12">
-                            <VerticalStackLayout Spacing="2">
-                                <Label Text="Revenus" FontSize="11" TextColor="{StaticResource TextSecondary}" />
-                                <Label Text="{Binding TotalIncome}" FontSize="14" FontAttributes="Bold"
-                                       TextColor="{StaticResource IncomeGreen}" />
-                            </VerticalStackLayout>
-                        </Border>
-                        <Border Grid.Column="1" 
-                                BackgroundColor="White"
-                                StrokeShape="RoundRectangle 12"
-                                StrokeThickness="0.5"
-                                Stroke="#AAAAAA"
-                                Padding="12">
-                            <VerticalStackLayout Spacing="2">
-                                <Label Text="Dépenses" FontSize="11" TextColor="{StaticResource TextSecondary}" />
-                                <Label Text="{Binding TotalExpenses}" FontSize="14" FontAttributes="Bold"
-                                       TextColor="{StaticResource ExpenseRed}" />
-                            </VerticalStackLayout>
-                        </Border>
-                        <Border Grid.Column="2" 
-                                BackgroundColor="White"
-                                StrokeShape="RoundRectangle 12"
-                                StrokeThickness="0.5"
-                                Stroke="#AAAAAA"
-                                Padding="12">
-                            <VerticalStackLayout Spacing="2">
-                                <Label Text="Solde" FontSize="11" TextColor="{StaticResource TextSecondary}" />
-                                <Label Text="{Binding Balance}" FontSize="14" FontAttributes="Bold"
-                                       TextColor="#134016" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </Grid>
-
-                    <!-- Category Breakdown as horizontal bar chart -->
-                    <Label Text="Répartition par catégorie" Style="{StaticResource SectionTitle}" Margin="0,8,0,0" />
-
-                    <CollectionView ItemsSource="{Binding CategoryBreakdown}" SelectionMode="None">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="vm:CategoryStat">
-                                <VerticalStackLayout Spacing="4" Margin="0,0,0,14">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <Label Text="{Binding Category}" FontSize="14"
-                                               FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
-                                        <Label Grid.Column="1" FontSize="13"
-                                               TextColor="{StaticResource TextSecondary}">
-                                            <Label.Text>
-                                                <MultiBinding StringFormat="{}{0} ({1})">
-                                                    <Binding Path="DisplayAmount" />
-                                                    <Binding Path="DisplayPercentage" />
-                                                </MultiBinding>
-                                            </Label.Text>
-                                        </Label>
-                                    </Grid>
-                                    <!-- Bar -->
-                                    <ProgressBar Progress="{Binding PercentageDecimal}"
-                                                 ProgressColor="{Binding Color}"
-                                                 HeightRequest="8" />
-                                </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-
-                        <CollectionView.EmptyView>
-                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8"
-                                                 Margin="0,40,0,0">
-                                <Label Text="📊" FontSize="48" HorizontalOptions="Center" />
-                                <Label Text="Ajoutez des transactions pour voir les statistiques" FontSize="14"
-                                       TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"
-                                       HorizontalTextAlignment="Center" />
-                            </VerticalStackLayout>
-                        </CollectionView.EmptyView>
-                    </CollectionView>
-
-                </VerticalStackLayout>
-            </ScrollView>
-        </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                <Label Text="En développement" FontSize="20" FontFamily="MerriweatherBold"
+                       TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" />
+                <Label Text="Cette fonctionnalité sera disponible prochainement."
+                       FontSize="14" TextColor="{StaticResource TextSecondary}"
+                       HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Grid>
     </Grid>
 </ContentPage>

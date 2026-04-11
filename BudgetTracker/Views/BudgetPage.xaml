@@ -8,14 +8,14 @@
              Title="Budget">
 
     <Grid>
-        <VerticalStackLayout Spacing="0">
+        <Grid RowDefinitions="Auto,*">
             <!-- Rounded Header -->
-            <Border Style="{StaticResource PageHeader}">
+            <Border Grid.Row="0" Style="{StaticResource PageHeader}">
                 <Label Text="Budget" Style="{StaticResource PageHeaderTitle}" />
             </Border>
 
             <!-- Scrollable content -->
-            <ScrollView x:Name="MainScroll" Scrolled="OnScrolled">
+            <ScrollView Grid.Row="1" x:Name="MainScroll" Scrolled="OnScrolled">
                 <Grid Padding="20,20,20,100" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
 
                     <!-- Summary — top card: Revenu -->
@@ -145,7 +145,7 @@
 
                 </Grid>
             </ScrollView>
-        </VerticalStackLayout>
+        </Grid>
 
         <!-- Floating Action Button -->
         <Button x:Name="FabButton"
@@ -173,7 +173,7 @@
 
             <!-- Sheet panel -->
             <Border x:Name="SheetPanel"
-                    BackgroundColor="#F2F1EB"
+                    BackgroundColor="#EAE8E0"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 24,24,0,0"
                     VerticalOptions="End"
@@ -235,7 +235,7 @@
                     <Button Text="Ajouter"
                             BackgroundColor="#134016"
                             TextColor="White"
-                            CornerRadius="40"
+                            CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
                             FontAttributes="Bold"
                             HeightRequest="50"
                             Margin="0,8,0,0"

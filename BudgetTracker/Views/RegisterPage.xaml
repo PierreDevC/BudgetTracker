@@ -79,7 +79,7 @@
                 <Button Text="Créer le compte"
                         BackgroundColor="#134016"
                         TextColor="White"
-                        CornerRadius="40"
+                        CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
                         FontAttributes="Bold"
                         HeightRequest="50"
                         Command="{Binding RegisterCommand}"

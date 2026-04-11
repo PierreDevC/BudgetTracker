@@ -23,17 +23,7 @@ public class MockDataService
             Reason = "Mieux gérer mes finances"
         };
 
-        Transactions = new List<Transaction>
-        {
-            new() { Name = "Épicerie", Category = "Besoins", Amount = 85.50m, Date = DateTime.Now.AddDays(-1), Type = TransactionType.Expense },
-            new() { Name = "Salaire", Category = "Revenu", Amount = 3200.00m, Date = DateTime.Now.AddDays(-3), Type = TransactionType.Income },
-            new() { Name = "Netflix", Category = "Abonnements", Amount = 16.99m, Date = DateTime.Now.AddDays(-5), Type = TransactionType.Expense },
-            new() { Name = "Loyer", Category = "Factures", Amount = 950.00m, Date = DateTime.Now.AddDays(-7), Type = TransactionType.Expense },
-            new() { Name = "Restaurant", Category = "Diners", Amount = 42.00m, Date = DateTime.Now.AddDays(-2), Type = TransactionType.Expense },
-            new() { Name = "Transport", Category = "Besoins", Amount = 90.00m, Date = DateTime.Now.AddDays(-4), Type = TransactionType.Expense },
-            new() { Name = "CELI", Category = "Investissements", Amount = 200.00m, Date = DateTime.Now.AddDays(-6), Type = TransactionType.Expense },
-            new() { Name = "Téléphone", Category = "Factures", Amount = 55.00m, Date = DateTime.Now.AddDays(-8), Type = TransactionType.Expense },
-        };
+        Transactions = new List<Transaction>();
 
         MonthlyIncome = 3200.00m;
 
@@ -61,7 +51,7 @@ public class MockDataService
         .Where(t => t.Type == TransactionType.Income && t.Date.Month == DateTime.Now.Month)
         .Sum(t => t.Amount);
 
-    public decimal Balance => TotalIncome - TotalExpenses;
+    public decimal Balance => MonthlyIncome - TotalExpenses;
 
     public int TransactionCount => Transactions
         .Count(t => t.Date.Month == DateTime.Now.Month);
