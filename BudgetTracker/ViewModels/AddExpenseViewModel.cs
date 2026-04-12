@@ -56,6 +56,7 @@ public class AddExpenseViewModel : BaseViewModel
     /// <summary>
     /// Initialise une nouvelle instance de AddExpenseViewModel.
     /// </summary>
+    /// <param name="db">Le service de base de données.</param>
     public AddExpenseViewModel(Services.DatabaseService db)
     {
         _db = db;
@@ -63,12 +64,14 @@ public class AddExpenseViewModel : BaseViewModel
 
         SaveCommand = new Command(async () =>
         {
+            // Valide que le nom de la dépense n'est pas vide
             if (string.IsNullOrWhiteSpace(Name))
             {
                 await Shell.Current.DisplayAlert("Erreur", "Veuillez entrer un nom.", "OK");
                 return;
             }
 
+            // Valide que le montant est un nombre positif valide
             if (!decimal.TryParse(AmountText, System.Globalization.NumberStyles.Any,
                     System.Globalization.CultureInfo.CurrentCulture, out decimal amount) || amount <= 0)
             {
@@ -76,8 +79,10 @@ public class AddExpenseViewModel : BaseViewModel
                 return;
             }
 
+            // Utilise la catégorie sélectionnée ou "Autre" par défaut
             string category = SelectedCategoryIndex >= 0 ? Categories[SelectedCategoryIndex] : "Autre";
 
+            // Crée et enregistre la transaction en base de données
             await _db.AddTransactionAsync(new Transaction
             {
                 Name = Name,
@@ -87,6 +92,7 @@ public class AddExpenseViewModel : BaseViewModel
                 Type = TransactionType.Expense
             });
 
+            // Ferme la page modale après l'enregistrement
             await Shell.Current.Navigation.PopModalAsync();
         });
 

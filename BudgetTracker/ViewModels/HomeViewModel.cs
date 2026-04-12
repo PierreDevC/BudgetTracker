@@ -43,10 +43,15 @@ public class HomeViewModel : BaseViewModel
     /// <summary>
     /// Obtient le solde actuel.
     /// </summary>
+    /// <remarks>
+    /// Affiche "À définir" si aucun revenu ni transaction n'a été configuré,
+    /// sinon affiche le solde formaté en devise canadienne-française.
+    /// </remarks>
     public string Balance
     {
         get
         {
+            // Affiche "À définir" si l'utilisateur n'a pas configuré de revenu et aucune transaction
             if (_db.CurrentUser?.MonthlyIncome == 0 && _db.Transactions.Count == 0)
                 return "À définir";
             return _db.Balance.ToString("C", FrCA);
@@ -96,6 +101,8 @@ public class HomeViewModel : BaseViewModel
     /// <summary>
     /// Initialise une nouvelle instance de HomeViewModel.
     /// </summary>
+    /// <param name="db">Le service de base de données.</param>
+    /// <param name="services">Le fournisseur de services pour la navigation.</param>
     public HomeViewModel(Services.DatabaseService db, IServiceProvider services)
     {
         _db = db;
@@ -133,13 +140,20 @@ public class HomeViewModel : BaseViewModel
     /// <summary>
     /// Rafraîchit toutes les propriétés liées à l'accueil.
     /// </summary>
+    /// <remarks>
+    /// Utilisé lors de l'apparition de la page pour mettre à jour les données calculées
+    /// qui dépendent du service de base de données.
+    /// </remarks>
     public void RefreshProperties()
     {
+        // Notifie la vue que les propriétés utilisateur et calculs financiers ont changé
         OnPropertyChanged(nameof(UserName));
         OnPropertyChanged(nameof(TotalExpenses));
         OnPropertyChanged(nameof(TotalIncome));
         OnPropertyChanged(nameof(Balance));
         OnPropertyChanged(nameof(TransactionCount));
+
+        // Notifie la vue des collections et booléens de visibilité
         OnPropertyChanged(nameof(RecentTransactions));
         OnPropertyChanged(nameof(HasTransactions));
         OnPropertyChanged(nameof(NoTransactions));

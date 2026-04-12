@@ -28,14 +28,20 @@ public class OnboardingViewModel : BaseViewModel
         set
         {
             SetProperty(ref _currentStep, value);
+            // Notifie le changement de step et réafraîchit les propriétés dérivées
+            // pour mettre à jour l'affichage conditionnel dans la vue
             OnPropertyChanged(nameof(IsStep0));
             OnPropertyChanged(nameof(IsStep1));
             OnPropertyChanged(nameof(IsStep2));
             OnPropertyChanged(nameof(IsStep3));
+
+            // Notifie les changements d'opacité des indicateurs visuels (dots)
             OnPropertyChanged(nameof(Dot0Opacity));
             OnPropertyChanged(nameof(Dot1Opacity));
             OnPropertyChanged(nameof(Dot2Opacity));
             OnPropertyChanged(nameof(Dot3Opacity));
+
+            // Notifie les changements de visibilité des boutons de navigation
             OnPropertyChanged(nameof(ShowNextButton));
             OnPropertyChanged(nameof(ShowFinishButton));
             OnPropertyChanged(nameof(ShowBackButton));
@@ -138,6 +144,8 @@ public class OnboardingViewModel : BaseViewModel
     /// <summary>
     /// Initialise une nouvelle instance de OnboardingViewModel.
     /// </summary>
+    /// <param name="db">Le service de base de données.</param>
+    /// <param name="services">Le fournisseur de services pour la navigation.</param>
     public OnboardingViewModel(Services.DatabaseService db, IServiceProvider services)
     {
         _db = db;
@@ -154,12 +162,14 @@ public class OnboardingViewModel : BaseViewModel
     /// </summary>
     async Task FinishOnboardingAsync()
     {
+        // Enregistre le revenu mensuel si fourni et valide
         if (decimal.TryParse(MonthlyIncome, out var income))
         {
             _db.CurrentUser!.MonthlyIncome = income;
             await _db.UpdateUserAsync();
         }
 
+        // Crée des catégories de budget pour les domaines fournis
         if (decimal.TryParse(GroceriesBudget, out var groceries))
             await _db.AddCategoryAsync(new Models.BudgetCategory { Name = "Épiceries", Amount = groceries });
 
@@ -169,6 +179,7 @@ public class OnboardingViewModel : BaseViewModel
         if (decimal.TryParse(TransportBudget, out var transport))
             await _db.AddCategoryAsync(new Models.BudgetCategory { Name = "Transport", Amount = transport });
 
+        // Navigation vers l'écran principal (AppShell)
         Application.Current!.MainPage = _services.GetRequiredService<AppShell>();
     }
 }

@@ -14,7 +14,7 @@ public class DatabaseService
     /// </summary>
     SQLiteAsyncConnection? _db;
 
-    // ── In-memory state (populated from DB on login) ─────────────────────────────
+    // ── State de mémorire (ajouté à partir de la base de données) ─────────────────────────────
 
     /// <summary>
     /// Obtient l'utilisateur actuellement connecté.
@@ -49,6 +49,8 @@ public class DatabaseService
     /// <summary>
     /// Récupère un utilisateur par son e-mail.
     /// </summary>
+    /// <param name="email">L'adresse e-mail de l'utilisateur à rechercher.</param>
+    /// <returns>L'utilisateur trouvé, ou <c>null</c> si aucun utilisateur ne correspond.</returns>
     public async Task<User?> GetUserByEmailAsync(string email)
     {
         await InitAsync();
@@ -58,6 +60,8 @@ public class DatabaseService
     /// <summary>
     /// Récupère un utilisateur par son ID.
     /// </summary>
+    /// <param name="id">L'identifiant unique de l'utilisateur.</param>
+    /// <returns>L'utilisateur trouvé, ou <c>null</c> si aucun utilisateur ne correspond.</returns>
     public async Task<User?> GetUserByIdAsync(int id)
     {
         await InitAsync();
@@ -67,6 +71,7 @@ public class DatabaseService
     /// <summary>
     /// Crée un nouvel utilisateur dans la base de données.
     /// </summary>
+    /// <param name="user">L'objet utilisateur contenant les informations à insérer.</param>
     public async Task CreateUserAsync(User user)
     {
         await InitAsync();
@@ -86,8 +91,9 @@ public class DatabaseService
     // ── Session ───────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Charge les données de l'utilisateur en mémoire.
+    /// Charge les données de l'utilisateur en mémoire (transactions et catégories).
     /// </summary>
+    /// <param name="user">L'utilisateur dont charger les données.</param>
     public async Task LoadUserDataAsync(User user)
     {
         await InitAsync();
@@ -112,7 +118,7 @@ public class DatabaseService
         BudgetCategories.Clear();
     }
 
-    // ── Computed (sync, from in-memory) ───────────────────────────────────────────
+    // ── Dépenses, revenu, solde (synchronisation, de la mémoire) ───────────────────────────────────────────
 
     /// <summary>
     /// Obtient le total des dépenses pour le mois en cours.
@@ -147,8 +153,9 @@ public class DatabaseService
     // ── Transactions ──────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ajoute une nouvelle transaction à la base de données et à la mémoire.
+    /// Ajoute une nouvelle transaction à la base de données et à la mémoire (au début de la liste).
     /// </summary>
+    /// <param name="t">L'objet transaction à ajouter.</param>
     public async Task AddTransactionAsync(Transaction t)
     {
         await InitAsync();
@@ -157,11 +164,12 @@ public class DatabaseService
         Transactions.Insert(0, t);
     }
 
-    // ── Budget Categories ─────────────────────────────────────────────────────────
+    // ── Categories de budget ─────────────────────────────────────────────────────────
 
     /// <summary>
     /// Ajoute une nouvelle catégorie de budget à la base de données et à la mémoire.
     /// </summary>
+    /// <param name="cat">L'objet catégorie de budget à ajouter.</param>
     public async Task AddCategoryAsync(BudgetCategory cat)
     {
         await InitAsync();
@@ -173,6 +181,7 @@ public class DatabaseService
     /// <summary>
     /// Met à jour une catégorie de budget existante dans la base de données.
     /// </summary>
+    /// <param name="cat">L'objet catégorie de budget modifié à mettre à jour.</param>
     public async Task UpdateCategoryAsync(BudgetCategory cat)
     {
         await InitAsync();
@@ -182,6 +191,7 @@ public class DatabaseService
     /// <summary>
     /// Supprime une catégorie de budget de la base de données et de la mémoire.
     /// </summary>
+    /// <param name="cat">L'objet catégorie de budget à supprimer.</param>
     public async Task DeleteCategoryAsync(BudgetCategory cat)
     {
         await InitAsync();

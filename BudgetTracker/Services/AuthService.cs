@@ -31,6 +31,7 @@ public class AuthService
     /// <summary>
     /// Tente de restaurer la session utilisateur.
     /// </summary>
+    /// <returns><c>true</c> si la session a été restaurée avec succès; sinon <c>false</c>.</returns>
     public async Task<bool> TryRestoreSessionAsync()
     {
         var id = _session.GetSavedUserId();
@@ -44,6 +45,9 @@ public class AuthService
     /// <summary>
     /// Connecte un utilisateur avec e-mail et mot de passe.
     /// </summary>
+    /// <param name="email">L'adresse e-mail de l'utilisateur.</param>
+    /// <param name="password">Le mot de passe en clair.</param>
+    /// <returns><c>true</c> si la connexion a réussi; sinon <c>false</c>.</returns>
     public async Task<bool> LoginAsync(string email, string password)
     {
         var user = await _db.GetUserByEmailAsync(email.Trim().ToLower());
@@ -57,6 +61,10 @@ public class AuthService
     /// <summary>
     /// Inscrit un nouvel utilisateur.
     /// </summary>
+    /// <param name="name">Le nom complet de l'utilisateur.</param>
+    /// <param name="email">L'adresse e-mail unique de l'utilisateur.</param>
+    /// <param name="password">Le mot de passe en clair (au moins 8 caractères recommandé).</param>
+    /// <returns>Un tuple contenant <c>success</c> (true si l'inscription a réussi) et <c>error</c> (message d'erreur ou null).</returns>
     public async Task<(bool success, string? error)> RegisterAsync(string name, string email, string password)
     {
         var existing = await _db.GetUserByEmailAsync(email.Trim().ToLower());
@@ -82,6 +90,9 @@ public class AuthService
     /// <summary>
     /// Modifie le mot de passe de l'utilisateur actuel.
     /// </summary>
+    /// <param name="currentPassword">Le mot de passe actuel en clair (pour vérification).</param>
+    /// <param name="newPassword">Le nouveau mot de passe en clair (au minimum 8 caractères).</param>
+    /// <returns>Un tuple contenant <c>success</c> (true si le changement a réussi) et <c>error</c> (message d'erreur ou null).</returns>
     public async Task<(bool success, string? error)> ChangePasswordAsync(string currentPassword, string newPassword)
     {
         var user = _db.CurrentUser;
@@ -108,6 +119,7 @@ public class AuthService
     /// <summary>
     /// Génère un sel cryptographique aléatoire.
     /// </summary>
+    /// <returns>Une chaîne Base64 représentant un sel de 16 octets.</returns>
     static string GenerateSalt()
     {
         var bytes = new byte[16];
@@ -118,6 +130,9 @@ public class AuthService
     /// <summary>
     /// Hache un mot de passe en utilisant PBKDF2 avec un sel donné.
     /// </summary>
+    /// <param name="password">Le mot de passe en clair à hacher.</param>
+    /// <param name="salt">Le sel en Base64 à utiliser pour le hachage (PBKDF2).</param>
+    /// <returns>Une chaîne Base64 représentant le hachage PBKDF2 (SHA256, 100 000 itérations, 32 octets).</returns>
     static string Hash(string password, string salt)
     {
         using var pbkdf2 = new Rfc2898DeriveBytes(
@@ -131,6 +146,10 @@ public class AuthService
     /// <summary>
     /// Vérifie un mot de passe par rapport à un hachage et un sel.
     /// </summary>
+    /// <param name="password">Le mot de passe en clair à vérifier.</param>
+    /// <param name="hash">Le hachage PBKDF2 stocké en Base64 pour la comparaison.</param>
+    /// <param name="salt">Le sel en Base64 associé au hachage.</param>
+    /// <returns><c>true</c> si le mot de passe correspond au hachage; sinon <c>false</c>.</returns>
     static bool Verify(string password, string hash, string salt)
         => Hash(password, salt) == hash;
 }

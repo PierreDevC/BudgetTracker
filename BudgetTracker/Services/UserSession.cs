@@ -14,6 +14,7 @@ public class UserSession
     /// <summary>
     /// Enregistre l'ID de l'utilisateur dans les préférences.
     /// </summary>
+    /// <param name="userId">L'identifiant de l'utilisateur à enregistrer.</param>
     public void Save(int userId) => Preferences.Set(Key, userId);
 
     /// <summary>
@@ -24,6 +25,7 @@ public class UserSession
     /// <summary>
     /// Récupère l'ID de l'utilisateur enregistré depuis les préférences.
     /// </summary>
+    /// <returns>L'identifiant de l'utilisateur, ou <c>null</c> si aucun utilisateur n'est enregistré.</returns>
     public int? GetSavedUserId() =>
         Preferences.ContainsKey(Key) ? Preferences.Get(Key, 0) : null;
 }

@@ -45,18 +45,21 @@ public class AddRevenuViewModel : BaseViewModel
     /// <summary>
     /// Initialise une nouvelle instance de AddRevenuViewModel.
     /// </summary>
+    /// <param name="db">Le service de base de données.</param>
     public AddRevenuViewModel(Services.DatabaseService db)
     {
         _db = db;
 
         SaveCommand = new Command(async () =>
         {
+            // Valide que la source de revenu n'est pas vide
             if (string.IsNullOrWhiteSpace(Name))
             {
                 await Shell.Current.DisplayAlert("Erreur", "Veuillez entrer une source de revenu.", "OK");
                 return;
             }
 
+            // Valide que le montant est un nombre positif valide
             if (!decimal.TryParse(AmountText, System.Globalization.NumberStyles.Any,
                     System.Globalization.CultureInfo.CurrentCulture, out decimal amount) || amount <= 0)
             {
@@ -64,15 +67,17 @@ public class AddRevenuViewModel : BaseViewModel
                 return;
             }
 
+            // Crée et enregistre la transaction de revenu en base de données
             await _db.AddTransactionAsync(new Transaction
             {
                 Name = Name,
                 Amount = amount,
-                Category = "Revenu",
+                Category = "Revenu",  // Catégorie fixe pour les revenus
                 Date = Date,
                 Type = TransactionType.Income
             });
 
+            // Ferme la page modale après l'enregistrement
             await Shell.Current.Navigation.PopModalAsync();
         });
 

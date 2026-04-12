@@ -33,6 +33,8 @@ public class TransactionsViewModel : BaseViewModel
     /// <summary>
     /// Initialise une nouvelle instance de TransactionsViewModel.
     /// </summary>
+    /// <param name="db">Le service de base de données.</param>
+    /// <param name="services">Le fournisseur de services pour la navigation.</param>
     public TransactionsViewModel(Services.DatabaseService db, IServiceProvider services)
     {
         _db = db;
@@ -55,9 +57,15 @@ public class TransactionsViewModel : BaseViewModel
     /// <summary>
     /// Rafraîchit la liste des transactions.
     /// </summary>
+    /// <remarks>
+    /// Recrée la collection en triant par date décroissante (les plus récentes en premier).
+    /// Appelé lors de l'apparition de la page pour afficher les derniers changements.
+    /// </remarks>
     public void Refresh()
     {
+        // Vide et recrée la liste de transactions depuis la base de données
         Transactions.Clear();
+        // Trie par date décroissante (les plus récentes d'abord)
         foreach (var t in _db.Transactions.OrderByDescending(t => t.Date))
             Transactions.Add(t);
     }

@@ -71,6 +71,9 @@ public class ProfileViewModel : BaseViewModel
     /// <summary>
     /// Initialise une nouvelle instance de ProfileViewModel.
     /// </summary>
+    /// <param name="db">Le service de base de données.</param>
+    /// <param name="auth">Le service d'authentification.</param>
+    /// <param name="services">Le fournisseur de services pour la navigation.</param>
     public ProfileViewModel(Services.DatabaseService db, Services.AuthService auth, IServiceProvider services)
     {
         _db = db;
@@ -84,13 +87,16 @@ public class ProfileViewModel : BaseViewModel
         SaveCommand = new Command(async () =>
         {
             if (_db.CurrentUser is null) return;
+            // Met à jour le nom de l'utilisateur dans l'objet en mémoire
             _db.CurrentUser.Name = Name;
+            // Enregistre les changements dans la base de données
             await _db.UpdateUserAsync();
             await Shell.Current.DisplayAlert("Succès", "Profil mis à jour.", "OK");
         });
 
         ChangePasswordCommand = new Command(async () =>
         {
+            // Valide que tous les champs sont remplis
             if (string.IsNullOrWhiteSpace(CurrentPassword) ||
                 string.IsNullOrWhiteSpace(NewPassword) ||
                 string.IsNullOrWhiteSpace(ConfirmNewPassword))
@@ -98,22 +104,30 @@ public class ProfileViewModel : BaseViewModel
                 await Shell.Current.DisplayAlert("Erreur", "Veuillez remplir tous les champs.", "OK");
                 return;
             }
+
+            // Valide que le nouveau mot de passe et sa confirmation correspondent
             if (NewPassword != ConfirmNewPassword)
             {
                 await Shell.Current.DisplayAlert("Erreur", "Les nouveaux mots de passe ne correspondent pas.", "OK");
                 return;
             }
+
+            // Valide la longueur minimale du nouveau mot de passe
             if (NewPassword.Length < 8)
             {
                 await Shell.Current.DisplayAlert("Erreur", "Le mot de passe doit contenir au moins 8 caractères.", "OK");
                 return;
             }
+
+            // Appelle le service d'authentification pour changer le mot de passe
             var (success, error) = await _auth.ChangePasswordAsync(CurrentPassword, NewPassword);
             if (!success)
             {
                 await Shell.Current.DisplayAlert("Erreur", error, "OK");
                 return;
             }
+
+            // Vide les champs de saisie après succès
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmNewPassword = string.Empty;
@@ -122,7 +136,9 @@ public class ProfileViewModel : BaseViewModel
 
         LogoutCommand = new Command(() =>
         {
+            // Efface les données de session et d'utilisateur
             _auth.Logout();
+            // Navigue vers la page de connexion
             Application.Current!.MainPage = new NavigationPage(
                 _services.GetRequiredService<Views.LoginPage>());
         });

@@ -37,6 +37,11 @@ public class BaseViewModel : INotifyPropertyChanged
     /// <summary>
     /// Définit la valeur de la propriété et déclenche l'événement PropertyChanged si nécessaire.
     /// </summary>
+    /// <typeparam name="T">Le type de la propriété.</typeparam>
+    /// <param name="backingStore">La référence au champ de sauvegarde.</param>
+    /// <param name="value">La nouvelle valeur.</param>
+    /// <param name="propertyName">Le nom de la propriété (automatiquement capturé par CallerMemberName).</param>
+    /// <returns><c>true</c> si la valeur a été modifiée; sinon <c>false</c>.</returns>
     protected bool SetProperty<T>(ref T backingStore, T value,
         [CallerMemberName] string propertyName = "")
     {

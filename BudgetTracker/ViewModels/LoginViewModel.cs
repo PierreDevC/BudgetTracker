@@ -43,6 +43,8 @@ public class LoginViewModel : BaseViewModel
     /// <summary>
     /// Initialise une nouvelle instance de LoginViewModel.
     /// </summary>
+    /// <param name="auth">Le service d'authentification.</param>
+    /// <param name="services">Le fournisseur de services pour la navigation.</param>
     public LoginViewModel(Services.AuthService auth, IServiceProvider services)
     {
         _auth = auth;
