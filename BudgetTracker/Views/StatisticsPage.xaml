@@ -14,12 +14,151 @@
                 <Label Text="Statistiques" Style="{StaticResource PageHeaderTitle}" />
             </Border>
 
-            <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
-                <Label Text="En développement" FontSize="20" FontFamily="MerriweatherBold"
-                       TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" />
-                <Label Text="Cette fonctionnalité sera disponible prochainement."
-                       FontSize="14" TextColor="{StaticResource TextSecondary}"
-                       HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            <!-- Content avec données -->
+            <ScrollView Grid.Row="1" Padding="20" IsVisible="{Binding HasData}">
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Résumé du mois -->
+                    <Label Text="Résumé du mois" 
+                           FontSize="18" 
+                           FontFamily="MerriweatherBold" 
+                           TextColor="{StaticResource TextPrimary}" 
+                           Margin="0,8,0,8" />
+
+                    <!-- Cartes Revenus / Dépenses / Solde -->
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+                        <!-- Revenus -->
+                        <Border Grid.Column="0" Grid.Row="0"
+                                BackgroundColor="White"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0.5"
+                                Stroke="#AAAAAA"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="💵 Revenus" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding TotalIncome}" FontSize="18" FontAttributes="Bold"
+                                       TextColor="{StaticResource IncomeGreen}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Dépenses -->
+                        <Border Grid.Column="1" Grid.Row="0"
+                                BackgroundColor="White"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0.5"
+                                Stroke="#AAAAAA"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="💸 Dépenses" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding TotalExpenses}" FontSize="18" FontAttributes="Bold"
+                                       TextColor="{StaticResource ExpenseRed}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Solde -->
+                        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+                                BackgroundColor="#134016"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="💰 Solde du mois" FontSize="12" TextColor="#AAFFAA" />
+                                <Label Text="{Binding Balance}" FontSize="22" FontAttributes="Bold"
+                                       TextColor="White" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- Nombre de transactions -->
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0.5"
+                            Stroke="#AAAAAA"
+                            Padding="16">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="📊" FontSize="20" VerticalOptions="Center" />
+                            <Label VerticalOptions="Center">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding TransactionCount}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                                        <Span Text=" transactions ce mois-ci" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <!-- Dépenses par catégorie -->
+                    <Label Text="Dépenses par catégorie" 
+                           FontSize="18" 
+                           FontFamily="MerriweatherBold" 
+                           TextColor="{StaticResource TextPrimary}" 
+                           Margin="0,16,0,8" />
+
+                    <!-- Liste des catégories -->
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding CategoryStats}" Spacing="10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CategoryStatistic">
+                                <Border BackgroundColor="White"
+                                        StrokeShape="RoundRectangle 16"
+                                        StrokeThickness="0.5"
+                                        Stroke="#AAAAAA"
+                                        Padding="16">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                        <!-- Emoji -->
+                                        <Label Grid.Column="0" 
+                                               Text="{Binding CategoryEmoji}" 
+                                               FontSize="28" 
+                                               VerticalOptions="Center" />
+
+                                        <!-- Nom de la catégorie + nombre de transactions -->
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                            <Label Text="{Binding Category}" 
+                                                   FontSize="15" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="{StaticResource TextPrimary}" />
+                                            <Label FontSize="12" TextColor="{StaticResource TextSecondary}">
+                                                <Label.Text>
+                                                    <MultiBinding StringFormat="{}{0} transaction(s)">
+                                                        <Binding Path="TransactionCount" />
+                                                    </MultiBinding>
+                                                </Label.Text>
+                                            </Label>
+                                        </VerticalStackLayout>
+
+                                        <!-- Montant -->
+                                        <Label Grid.Column="2" 
+                                               Text="{Binding FormattedAmount}" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold" 
+                                               TextColor="{StaticResource ExpenseRed}" 
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- État vide (pas de données) -->
+            <VerticalStackLayout Grid.Row="1" 
+                                 VerticalOptions="Center" 
+                                 HorizontalOptions="Center" 
+                                 Spacing="12"
+                                 IsVisible="{Binding NoData}">
+                <Label Text="📊" FontSize="60" HorizontalOptions="Center" />
+                <Label Text="Aucune donnée" 
+                       FontSize="20" 
+                       FontFamily="MerriweatherBold"
+                       TextColor="{StaticResource TextPrimary}" 
+                       HorizontalOptions="Center" />
+                <Label Text="Ajoutez des transactions pour voir vos statistiques."
+                       FontSize="14" 
+                       TextColor="{StaticResource TextSecondary}"
+                       HorizontalOptions="Center" 
+                       HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
         </Grid>
     </Grid>

@@ -6,7 +6,7 @@ namespace BudgetTracker.ViewModels;
 
 /// <summary>
 /// ViewModel pour la gestion des transactions.
-/// Auteur : Pierre
+/// Auteur : Pierre, Aboubacar (recherche)
 /// </summary>
 public class TransactionsViewModel : BaseViewModel
 {
@@ -21,9 +21,32 @@ public class TransactionsViewModel : BaseViewModel
     readonly IServiceProvider _services;
 
     /// <summary>
-    /// Obtient la collection des transactions.
+    /// Liste complète des transactions (non filtrée).
+    /// </summary>
+    private List<Models.Transaction> _allTransactions = new();
+
+    /// <summary>
+    /// Obtient la collection des transactions affichées.
     /// </summary>
     public ObservableCollection<Models.Transaction> Transactions { get; } = new();
+
+    /// <summary>
+    /// Texte de recherche saisi par l'utilisateur.
+    /// </summary>
+    private string _searchText = string.Empty;
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (_searchText != value)
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                FilterTransactions();
+            }
+        }
+    }
 
     /// <summary>
     /// Commande pour ajouter une transaction.
@@ -41,7 +64,10 @@ public class TransactionsViewModel : BaseViewModel
         _services = services;
         Title = "Transactions";
 
-        foreach (var t in _db.Transactions.OrderByDescending(t => t.Date))
+        // Charge toutes les transactions
+        _allTransactions = _db.Transactions.OrderByDescending(t => t.Date).ToList();
+
+        foreach (var t in _allTransactions)
             Transactions.Add(t);
 
         AddTransactionCommand = new Command(async () =>
@@ -55,6 +81,33 @@ public class TransactionsViewModel : BaseViewModel
     }
 
     /// <summary>
+    /// Filtre les transactions selon le texte de recherche.
+    /// </summary>
+    private void FilterTransactions()
+    {
+        Transactions.Clear();
+
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            // Affiche toutes les transactions si la recherche est vide
+            foreach (var t in _allTransactions)
+                Transactions.Add(t);
+        }
+        else
+        {
+            // Filtre par nom, catégorie ou montant
+            var filtered = _allTransactions.Where(t =>
+                t.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                t.Category.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                t.Amount.ToString().Contains(SearchText)
+            );
+
+            foreach (var t in filtered)
+                Transactions.Add(t);
+        }
+    }
+
+    /// <summary>
     /// Rafraîchit la liste des transactions.
     /// </summary>
     /// <remarks>
@@ -63,10 +116,10 @@ public class TransactionsViewModel : BaseViewModel
     /// </remarks>
     public void Refresh()
     {
-        // Vide et recrée la liste de transactions depuis la base de données
-        Transactions.Clear();
-        // Trie par date décroissante (les plus récentes d'abord)
-        foreach (var t in _db.Transactions.OrderByDescending(t => t.Date))
-            Transactions.Add(t);
+        // Recharge toutes les transactions depuis la base de données
+        _allTransactions = _db.Transactions.OrderByDescending(t => t.Date).ToList();
+
+        // Réapplique le filtre de recherche
+        FilterTransactions();
     }
 }
