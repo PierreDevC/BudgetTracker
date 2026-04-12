@@ -79,9 +79,11 @@ public class AddRevenuViewModel : BaseViewModel
                 Type = TransactionType.Income
             });
 
-            // Ferme la page modale, puis affiche un toast de confirmation
-            await Shell.Current.Navigation.PopModalAsync();
+            // Affiche un toast de confirmation, puis ferme la page modale
+#if !WINDOWS
             await Toast.Make("Revenu ajouté.", ToastDuration.Short).Show();
+#endif
+            await Shell.Current.Navigation.PopModalAsync();
         });
 
         CancelCommand = new Command(async () =>

@@ -93,7 +93,9 @@ public class ProfileViewModel : BaseViewModel
             _db.CurrentUser.Name = Name;
             // Enregistre les changements dans la base de données
             await _db.UpdateUserAsync();
+#if !WINDOWS
             await Toast.Make("Profil mis à jour.", ToastDuration.Short).Show();
+#endif
         });
 
         ChangePasswordCommand = new Command(async () =>
@@ -133,7 +135,9 @@ public class ProfileViewModel : BaseViewModel
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmNewPassword = string.Empty;
+#if !WINDOWS
             await Toast.Make("Mot de passe mis à jour.", ToastDuration.Short).Show();
+#endif
         });
 
         LogoutCommand = new Command(() =>

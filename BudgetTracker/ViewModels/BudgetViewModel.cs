@@ -281,7 +281,9 @@ public class BudgetViewModel : BaseViewModel
                     item.Budgeted = amount;
                     await _db.UpdateCategoryAsync(item.Category);
                     RefreshTotals();
+#if !WINDOWS
                     await Toast.Make($"Budget « {item.Name} » mis à jour.", ToastDuration.Short).Show();
+#endif
                 }
             }
             // Traite l'action de suppression
@@ -289,7 +291,9 @@ public class BudgetViewModel : BaseViewModel
             {
                 await _db.DeleteCategoryAsync(item.Category);
                 Categories.Remove(item);
+#if !WINDOWS
                 await Toast.Make($"Catégorie « {item.Name} » supprimée.", ToastDuration.Short).Show();
+#endif
             }
         });
 
@@ -305,7 +309,9 @@ public class BudgetViewModel : BaseViewModel
             if (decimal.TryParse(amountStr, out var amount))
             {
                 TotalIncome = amount;
+#if !WINDOWS
                 await Toast.Make("Revenu mensuel mis à jour.", ToastDuration.Short).Show();
+#endif
             }
         });
     }
@@ -321,7 +327,9 @@ public class BudgetViewModel : BaseViewModel
         await _db.AddCategoryAsync(cat);
         Categories.Add(new BudgetItemViewModel(cat, _db));
         RefreshTotals();
+#if !WINDOWS
         await Toast.Make($"Catégorie « {name} » ajoutée.", ToastDuration.Short).Show();
+#endif
     }
 
     /// <summary>
