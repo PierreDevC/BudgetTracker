@@ -41,6 +41,11 @@ public class LoginViewModel : BaseViewModel
     public ICommand GoToRegisterCommand { get; }
 
     /// <summary>
+    /// Commande pour se connecter au compte de démonstration.
+    /// </summary>
+    public ICommand DemoCommand { get; }
+
+    /// <summary>
     /// Initialise une nouvelle instance de LoginViewModel.
     /// </summary>
     /// <param name="auth">Le service d'authentification.</param>
@@ -77,6 +82,16 @@ public class LoginViewModel : BaseViewModel
         {
             await Application.Current!.MainPage!.Navigation.PushAsync(
                 _services.GetRequiredService<Views.RegisterPage>());
+        });
+
+        DemoCommand = new Command(async () =>
+        {
+            IsBusy = true;
+            bool success = await _auth.LoginDemoAsync();
+            IsBusy = false;
+
+            if (success)
+                Application.Current!.MainPage = _services.GetRequiredService<AppShell>();
         });
     }
 }

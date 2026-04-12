@@ -32,6 +32,11 @@ public class DatabaseService
     public List<BudgetCategory> BudgetCategories { get; private set; } = new();
 
     /// <summary>
+    /// Adresse e-mail du compte de démonstration.
+    /// </summary>
+    public const string DemoEmail = "demo@budgettracker.app";
+
+    /// <summary>
     /// Initialise la connexion à la base de données et les tables.
     /// </summary>
     async Task InitAsync()
@@ -42,6 +47,87 @@ public class DatabaseService
         await _db.CreateTableAsync<User>();
         await _db.CreateTableAsync<Transaction>();
         await _db.CreateTableAsync<BudgetCategory>();
+        await SeedDemoAccountAsync();
+    }
+
+    /// <summary>
+    /// Crée le compte démo avec des catégories et transactions pré-remplies, une seule fois.
+    /// </summary>
+    async Task SeedDemoAccountAsync()
+    {
+        var existing = await _db!.Table<User>().Where(u => u.Email == DemoEmail).FirstOrDefaultAsync();
+        if (existing is not null) return;
+
+        var demo = new User
+        {
+            Name = "Démo",
+            Email = DemoEmail,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("demo1234", 12),
+            MonthlyIncome = 3500
+        };
+        await _db!.InsertAsync(demo);
+        var user = await _db!.Table<User>().Where(u => u.Email == DemoEmail).FirstOrDefaultAsync();
+        int uid = user!.Id;
+
+        // Catégories
+        var categories = new[]
+        {
+            new BudgetCategory { UserId = uid, Name = "Alimentation",  Amount = 500  },
+            new BudgetCategory { UserId = uid, Name = "Transport",      Amount = 200  },
+            new BudgetCategory { UserId = uid, Name = "Logement",       Amount = 1200 },
+            new BudgetCategory { UserId = uid, Name = "Loisirs",        Amount = 300  },
+            new BudgetCategory { UserId = uid, Name = "Santé",          Amount = 150  },
+            new BudgetCategory { UserId = uid, Name = "Vêtements",      Amount = 200  },
+            new BudgetCategory { UserId = uid, Name = "Restaurant",     Amount = 250  },
+            new BudgetCategory { UserId = uid, Name = "Épargne",        Amount = 400  },
+        };
+        foreach (var c in categories)
+            await _db!.InsertAsync(c);
+
+        // Dates relatives au mois courant et au mois précédent
+        var now = DateTime.Now;
+        var cur = (int y, int m, int d) => new DateTime(y, m, d);
+        int cy = now.Year, cm = now.Month;
+        int py = cm == 1 ? cy - 1 : cy;
+        int pm = cm == 1 ? 12 : cm - 1;
+
+        var transactions = new[]
+        {
+            // ── Mois courant — revenus ──────────────────────────────────────────
+            new Transaction { UserId=uid, Name="Salaire",          Category="Revenu",       Amount=2800m,  Date=cur(cy,cm,1),  Type=TransactionType.Income  },
+            new Transaction { UserId=uid, Name="Contrat pigiste",  Category="Revenu",       Amount=700m,   Date=cur(cy,cm,5),  Type=TransactionType.Income  },
+
+            // ── Mois courant — dépenses ─────────────────────────────────────────
+            new Transaction { UserId=uid, Name="Loyer",            Category="Logement",     Amount=1200m,  Date=cur(cy,cm,1),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Virement REER",    Category="Épargne",      Amount=200m,   Date=cur(cy,cm,1),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Passe STM",        Category="Transport",    Amount=94m,    Date=cur(cy,cm,2),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Netflix",          Category="Loisirs",      Amount=17m,    Date=cur(cy,cm,3),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Spotify",          Category="Loisirs",      Amount=10.99m, Date=cur(cy,cm,3),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Épicerie IGA",     Category="Alimentation", Amount=87.50m, Date=cur(cy,cm,3),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Essence",          Category="Transport",    Amount=68m,    Date=cur(cy,cm,4),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Manteau d'hiver",  Category="Vêtements",    Amount=139m,   Date=cur(cy,cm,5),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Pharmacie",        Category="Santé",        Amount=42.50m, Date=cur(cy,cm,6),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Resto Thaï",       Category="Restaurant",   Amount=48m,    Date=cur(cy,cm,7),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Épicerie Metro",   Category="Alimentation", Amount=65.20m, Date=cur(cy,cm,8),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Sushi Mikado",     Category="Restaurant",   Amount=62m,    Date=cur(cy,cm,9),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Cinéma",           Category="Loisirs",      Amount=32m,    Date=cur(cy,cm,10), Type=TransactionType.Expense },
+
+            // ── Mois précédent — revenus ────────────────────────────────────────
+            new Transaction { UserId=uid, Name="Salaire",          Category="Revenu",       Amount=2800m,  Date=cur(py,pm,1),  Type=TransactionType.Income  },
+            new Transaction { UserId=uid, Name="Remboursement",    Category="Revenu",       Amount=120m,   Date=cur(py,pm,15), Type=TransactionType.Income  },
+
+            // ── Mois précédent — dépenses ───────────────────────────────────────
+            new Transaction { UserId=uid, Name="Loyer",            Category="Logement",     Amount=1200m,  Date=cur(py,pm,1),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Virement REER",    Category="Épargne",      Amount=200m,   Date=cur(py,pm,1),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Gym Énergie",      Category="Santé",        Amount=45m,    Date=cur(py,pm,3),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Épicerie IGA",     Category="Alimentation", Amount=92m,    Date=cur(py,pm,5),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Amazon",           Category="Loisirs",      Amount=54.99m, Date=cur(py,pm,8),  Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Essence",          Category="Transport",    Amount=71m,    Date=cur(py,pm,10), Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Lunch bureau",     Category="Restaurant",   Amount=28.50m, Date=cur(py,pm,12), Type=TransactionType.Expense },
+            new Transaction { UserId=uid, Name="Chaussures sport", Category="Vêtements",    Amount=89m,    Date=cur(py,pm,18), Type=TransactionType.Expense },
+        };
+        foreach (var t in transactions)
+            await _db!.InsertAsync(t);
     }
 
     // ── User ─────────────────────────────────────────────────────────────────────

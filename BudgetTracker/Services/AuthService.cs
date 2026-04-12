@@ -113,6 +113,12 @@ public class AuthService
     }
 
     /// <summary>
+    /// Connecte directement le compte de démonstration.
+    /// </summary>
+    /// <returns><c>true</c> si la connexion a réussi.</returns>
+    public Task<bool> LoginDemoAsync() => LoginAsync(DatabaseService.DemoEmail, "demo1234");
+
+    /// <summary>
     /// Déconnecte l'utilisateur actuel.
     /// </summary>
     public void Logout()

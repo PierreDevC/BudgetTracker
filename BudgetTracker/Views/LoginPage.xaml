@@ -59,6 +59,24 @@
                 </Label>
             </HorizontalStackLayout>
 
+            <!-- Séparateur -->
+            <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="10" Margin="0,8,0,0">
+                <BoxView Grid.Column="0" HeightRequest="1" BackgroundColor="#DDDDDD" VerticalOptions="Center" />
+                <Label Grid.Column="1" Text="ou" TextColor="{StaticResource TextSecondary}" FontSize="13" VerticalOptions="Center" />
+                <BoxView Grid.Column="2" HeightRequest="1" BackgroundColor="#DDDDDD" VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Compte démo -->
+            <Button Text="Essayer la démo"
+                    Command="{Binding DemoCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="#134016"
+                    BorderColor="#134016"
+                    BorderWidth="1.5"
+                    FontAttributes="Bold"
+                    CornerRadius="25"
+                    HeightRequest="50" />
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
