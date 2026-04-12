@@ -22,7 +22,7 @@
                 <!-- Nom -->
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Nom" FontSize="13" TextColor="{StaticResource TextSecondary}" />
-                    <Border StrokeShape="RoundRectangle 12" StrokeThickness="0.5" Stroke="#AAAAAA"
+                    <Border StrokeShape="RoundRectangle 20" StrokeThickness="0.5" Stroke="#AAAAAA"
                             BackgroundColor="White" Padding="16,0">
                         <Entry Text="{Binding Name}" Placeholder="Ex: Épicerie"
                                PlaceholderColor="#AAAAAA" BackgroundColor="Transparent" />
@@ -32,7 +32,7 @@
                 <!-- Montant -->
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Montant ($)" FontSize="13" TextColor="{StaticResource TextSecondary}" />
-                    <Border StrokeShape="RoundRectangle 12" StrokeThickness="0.5" Stroke="#AAAAAA"
+                    <Border StrokeShape="RoundRectangle 20" StrokeThickness="0.5" Stroke="#AAAAAA"
                             BackgroundColor="White" Padding="16,0">
                         <Entry Text="{Binding AmountText}" Placeholder="0.00"
                                PlaceholderColor="#AAAAAA" BackgroundColor="Transparent"
@@ -43,7 +43,7 @@
                 <!-- Catégorie -->
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Catégorie" FontSize="13" TextColor="{StaticResource TextSecondary}" />
-                    <Border StrokeShape="RoundRectangle 12" StrokeThickness="0.5" Stroke="#AAAAAA"
+                    <Border StrokeShape="RoundRectangle 20" StrokeThickness="0.5" Stroke="#AAAAAA"
                             BackgroundColor="White" Padding="16,4">
                         <Picker ItemsSource="{Binding Categories}"
                                 SelectedIndex="{Binding SelectedCategoryIndex}"
@@ -55,7 +55,7 @@
                 <!-- Date -->
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Date" FontSize="13" TextColor="{StaticResource TextSecondary}" />
-                    <Border StrokeShape="RoundRectangle 12" StrokeThickness="0.5" Stroke="#AAAAAA"
+                    <Border StrokeShape="RoundRectangle 20" StrokeThickness="0.5" Stroke="#AAAAAA"
                             BackgroundColor="White" Padding="16,4">
                         <DatePicker Date="{Binding Date}" Format="d MMMM yyyy" />
                     </Border>
@@ -68,12 +68,12 @@
         <VerticalStackLayout Grid.Row="2" Spacing="10" Margin="0,16,0,24">
             <Button Text="Sauvegarder" Command="{Binding SaveCommand}"
                     BackgroundColor="#134016" TextColor="White" FontFamily="InterBold"
-                    FontSize="16" CornerRadius="{OnPlatform iOS=25, Android=25, Default=12}"
+                    FontSize="16" CornerRadius="25"
                     HeightRequest="52" />
             <Button Text="Annuler" Command="{Binding CancelCommand}"
                     BackgroundColor="Transparent" TextColor="#134016"
                     BorderColor="#134016" BorderWidth="1.5" FontFamily="InterBold"
-                    FontSize="16" CornerRadius="{OnPlatform iOS=25, Android=25, Default=12}"
+                    FontSize="16" CornerRadius="25"
                     HeightRequest="52" />
         </VerticalStackLayout>
 

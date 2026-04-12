@@ -56,12 +56,12 @@
         <VerticalStackLayout Grid.Row="2" Spacing="10" Margin="0,16,0,24">
             <Button Text="Sauvegarder" Command="{Binding SaveCommand}"
                     BackgroundColor="#134016" TextColor="White" FontFamily="InterBold"
-                    FontSize="16" CornerRadius="{OnPlatform iOS=25, Android=25, Default=12}"
+                    FontSize="16" CornerRadius="25"
                     HeightRequest="52" />
             <Button Text="Annuler" Command="{Binding CancelCommand}"
                     BackgroundColor="Transparent" TextColor="#134016"
                     BorderColor="#134016" BorderWidth="1.5" FontFamily="InterBold"
-                    FontSize="16" CornerRadius="{OnPlatform iOS=25, Android=25, Default=12}"
+                    FontSize="16" CornerRadius="25"
                     HeightRequest="52" />
         </VerticalStackLayout>
 

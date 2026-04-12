@@ -74,7 +74,7 @@
                                 TextColor="White"
                                 FontFamily="InterBold"
                                 FontSize="14"
-                                CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                                CornerRadius="25"
                                 HeightRequest="50"
                                 Command="{Binding AddRevenuCommand}" />
                         <Button Grid.Column="1"
@@ -85,7 +85,7 @@
                                 BorderWidth="1.5"
                                 FontFamily="InterBold"
                                 FontSize="14"
-                                CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                                CornerRadius="25"
                                 HeightRequest="50"
                                 Command="{Binding AddExpenseCommand}" />
                     </Grid>

@@ -146,7 +146,7 @@
                     TextColor="White"
                     FontFamily="InterBold"
                     FontSize="16"
-                    CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                    CornerRadius="25"
                     HeightRequest="52"
                     IsVisible="{Binding ShowNextButton}"
                     Command="{Binding NextCommand}" />
@@ -155,7 +155,7 @@
                     TextColor="White"
                     FontFamily="InterBold"
                     FontSize="16"
-                    CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                    CornerRadius="25"
                     HeightRequest="52"
                     IsVisible="{Binding ShowFinishButton}"
                     Command="{Binding FinishCommand}" />
@@ -166,7 +166,7 @@
                     BorderWidth="1.5"
                     FontFamily="InterBold"
                     FontSize="16"
-                    CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                    CornerRadius="25"
                     HeightRequest="52"
                     IsVisible="{Binding ShowBackButton}"
                     Command="{Binding BackCommand}" />
@@ -177,7 +177,7 @@
                     BorderWidth="1.5"
                     FontFamily="InterBold"
                     FontSize="16"
-                    CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                    CornerRadius="25"
                     HeightRequest="52"
                     IsVisible="{Binding ShowSkipButton}"
                     Command="{Binding SkipCommand}" />

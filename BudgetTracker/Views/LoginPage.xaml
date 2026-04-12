@@ -41,7 +41,7 @@
                 <Button Text="Se connecter"
                         BackgroundColor="#134016"
                         TextColor="White"
-                        CornerRadius="{OnPlatform iOS=25, Android=25, Default=40}"
+                        CornerRadius="25"
                         FontAttributes="Bold"
                         HeightRequest="50"
                         Command="{Binding LoginCommand}"
