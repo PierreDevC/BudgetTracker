@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using System.Windows.Input;
 
 namespace BudgetTracker.ViewModels;
@@ -91,7 +93,7 @@ public class ProfileViewModel : BaseViewModel
             _db.CurrentUser.Name = Name;
             // Enregistre les changements dans la base de données
             await _db.UpdateUserAsync();
-            await Shell.Current.DisplayAlert("Succès", "Profil mis à jour.", "OK");
+            await Toast.Make("Profil mis à jour.", ToastDuration.Short).Show();
         });
 
         ChangePasswordCommand = new Command(async () =>
@@ -131,7 +133,7 @@ public class ProfileViewModel : BaseViewModel
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmNewPassword = string.Empty;
-            await Shell.Current.DisplayAlert("Succès", "Mot de passe mis à jour.", "OK");
+            await Toast.Make("Mot de passe mis à jour.", ToastDuration.Short).Show();
         });
 
         LogoutCommand = new Command(() =>

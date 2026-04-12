@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using BudgetTracker.Models;
 
 namespace BudgetTracker.Services;
@@ -18,6 +17,11 @@ public class AuthService
     /// L'instance de session utilisateur.
     /// </summary>
     readonly UserSession _session;
+
+    /// <summary>
+    /// Le facteur de travail BCrypt (coût du hachage).
+    /// </summary>
+    const int WorkFactor = 12;
 
     /// <summary>
     /// Initialise une nouvelle instance de la classe AuthService.
@@ -52,7 +56,8 @@ public class AuthService
     {
         var user = await _db.GetUserByEmailAsync(email.Trim().ToLower());
         if (user is null) return false;
-        if (!Verify(password, user.PasswordHash, user.Salt)) return false;
+        // BCrypt.Verify compare le mot de passe au hachage (sel extrait automatiquement)
+        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) return false;
         _session.Save(user.Id);
         await _db.LoadUserDataAsync(user);
         return true;
@@ -71,14 +76,13 @@ public class AuthService
         if (existing is not null)
             return (false, "Un compte existe déjà avec ce courriel.");
 
-        var salt = GenerateSalt();
-        var hash = Hash(password, salt);
+        // BCrypt génère et intègre le sel dans la chaîne de hachage
+        var hash = BCrypt.Net.BCrypt.HashPassword(password, WorkFactor);
         var user = new User
         {
             Name = name.Trim(),
             Email = email.Trim().ToLower(),
-            PasswordHash = hash,
-            Salt = salt
+            PasswordHash = hash
         };
         await _db.CreateUserAsync(user);
         var created = await _db.GetUserByEmailAsync(user.Email);
@@ -97,12 +101,13 @@ public class AuthService
     {
         var user = _db.CurrentUser;
         if (user is null) return (false, "Aucun utilisateur connecté.");
-        if (!Verify(currentPassword, user.PasswordHash, user.Salt))
+
+        // Vérifie que le mot de passe actuel est correct avant d'autoriser le changement
+        if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.PasswordHash))
             return (false, "Mot de passe actuel incorrect.");
-        var newSalt = GenerateSalt();
-        var newHash = Hash(newPassword, newSalt);
-        user.PasswordHash = newHash;
-        user.Salt = newSalt;
+
+        // Génère un nouveau hachage BCrypt avec un nouveau sel intégré
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword, WorkFactor);
         await _db.UpdateUserAsync();
         return (true, null);
     }
@@ -115,41 +120,4 @@ public class AuthService
         _session.Clear();
         _db.ClearUserData();
     }
-
-    /// <summary>
-    /// Génère un sel cryptographique aléatoire.
-    /// </summary>
-    /// <returns>Une chaîne Base64 représentant un sel de 16 octets.</returns>
-    static string GenerateSalt()
-    {
-        var bytes = new byte[16];
-        RandomNumberGenerator.Fill(bytes);
-        return Convert.ToBase64String(bytes);
-    }
-
-    /// <summary>
-    /// Hache un mot de passe en utilisant PBKDF2 avec un sel donné.
-    /// </summary>
-    /// <param name="password">Le mot de passe en clair à hacher.</param>
-    /// <param name="salt">Le sel en Base64 à utiliser pour le hachage (PBKDF2).</param>
-    /// <returns>Une chaîne Base64 représentant le hachage PBKDF2 (SHA256, 100 000 itérations, 32 octets).</returns>
-    static string Hash(string password, string salt)
-    {
-        using var pbkdf2 = new Rfc2898DeriveBytes(
-            password,
-            Convert.FromBase64String(salt),
-            100_000,
-            HashAlgorithmName.SHA256);
-        return Convert.ToBase64String(pbkdf2.GetBytes(32));
-    }
-
-    /// <summary>
-    /// Vérifie un mot de passe par rapport à un hachage et un sel.
-    /// </summary>
-    /// <param name="password">Le mot de passe en clair à vérifier.</param>
-    /// <param name="hash">Le hachage PBKDF2 stocké en Base64 pour la comparaison.</param>
-    /// <param name="salt">Le sel en Base64 associé au hachage.</param>
-    /// <returns><c>true</c> si le mot de passe correspond au hachage; sinon <c>false</c>.</returns>
-    static bool Verify(string password, string hash, string salt)
-        => Hash(password, salt) == hash;
 }

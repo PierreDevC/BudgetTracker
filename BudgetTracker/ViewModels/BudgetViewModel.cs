@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using BudgetTracker.Models;
@@ -279,6 +281,7 @@ public class BudgetViewModel : BaseViewModel
                     item.Budgeted = amount;
                     await _db.UpdateCategoryAsync(item.Category);
                     RefreshTotals();
+                    await Toast.Make($"Budget « {item.Name} » mis à jour.", ToastDuration.Short).Show();
                 }
             }
             // Traite l'action de suppression
@@ -286,6 +289,7 @@ public class BudgetViewModel : BaseViewModel
             {
                 await _db.DeleteCategoryAsync(item.Category);
                 Categories.Remove(item);
+                await Toast.Make($"Catégorie « {item.Name} » supprimée.", ToastDuration.Short).Show();
             }
         });
 
@@ -299,7 +303,10 @@ public class BudgetViewModel : BaseViewModel
 
             // Valide et enregistre le nouveau revenu
             if (decimal.TryParse(amountStr, out var amount))
+            {
                 TotalIncome = amount;
+                await Toast.Make("Revenu mensuel mis à jour.", ToastDuration.Short).Show();
+            }
         });
     }
 
@@ -314,6 +321,7 @@ public class BudgetViewModel : BaseViewModel
         await _db.AddCategoryAsync(cat);
         Categories.Add(new BudgetItemViewModel(cat, _db));
         RefreshTotals();
+        await Toast.Make($"Catégorie « {name} » ajoutée.", ToastDuration.Short).Show();
     }
 
     /// <summary>

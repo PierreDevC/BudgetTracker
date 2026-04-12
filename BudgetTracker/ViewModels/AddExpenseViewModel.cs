@@ -1,4 +1,6 @@
 using BudgetTracker.Models;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using System.Windows.Input;
 
 namespace BudgetTracker.ViewModels;
@@ -92,8 +94,9 @@ public class AddExpenseViewModel : BaseViewModel
                 Type = TransactionType.Expense
             });
 
-            // Ferme la page modale après l'enregistrement
+            // Ferme la page modale, puis affiche un toast de confirmation
             await Shell.Current.Navigation.PopModalAsync();
+            await Toast.Make("Dépense ajoutée.", ToastDuration.Short).Show();
         });
 
         CancelCommand = new Command(async () =>

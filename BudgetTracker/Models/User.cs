@@ -27,14 +27,9 @@ public class User
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Obtient ou définit le mot de passe haché.
+    /// Obtient ou définit le hachage BCrypt du mot de passe (sel inclus dans la chaîne).
     /// </summary>
     public string PasswordHash { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Obtient ou définit le sel du mot de passe.
-    /// </summary>
-    public string Salt { get; set; } = string.Empty;
 
     /// <summary>
     /// Obtient ou définit le revenu mensuel de l'utilisateur.

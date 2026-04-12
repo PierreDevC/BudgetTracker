@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui;
 using MauiIcons.Fluent.Filled;
 using Microsoft.Extensions.Logging;
 
@@ -10,6 +11,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .UseFluentFilledMauiIcons()
             .ConfigureFonts(fonts =>
             {
