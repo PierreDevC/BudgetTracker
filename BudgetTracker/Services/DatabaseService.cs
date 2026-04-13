@@ -14,6 +14,25 @@ public class DatabaseService
     /// </summary>
     SQLiteAsyncConnection? _db;
 
+    readonly string? _dbPath;
+    readonly bool _seedDemo;
+
+    /// <summary>
+    /// Constructeur par défaut (utilisé par l'injection de dépendances MAUI).
+    /// </summary>
+    public DatabaseService() : this(null, true) { }
+
+    /// <summary>
+    /// Constructeur pour les tests : chemin SQLite explicite, peuplement optionnel.
+    /// </summary>
+    /// <param name="dbPath">Chemin vers le fichier SQLite, ou ":memory:" pour les tests.</param>
+    /// <param name="seedDemo">Si <c>false</c>, le compte de démonstration n'est pas créé.</param>
+    public DatabaseService(string? dbPath, bool seedDemo)
+    {
+        _dbPath = dbPath;
+        _seedDemo = seedDemo;
+    }
+
     // ── State de mémorire (ajouté à partir de la base de données) ─────────────────────────────
 
     /// <summary>
@@ -41,13 +60,29 @@ public class DatabaseService
     /// </summary>
     async Task InitAsync()
     {
-        if (_db is not null) return;
-        var path = Path.Combine(FileSystem.AppDataDirectory, "budget.db");
+        if (_db is not null)
+        {
+            return;
+        }
+
+        string path;
+        if (_dbPath is not null)
+        {
+            path = _dbPath;
+        }
+        else
+        {
+#if ANDROID || IOS || MACCATALYST || WINDOWS
+            path = Path.Combine(FileSystem.AppDataDirectory, "budget.db");
+#else
+            path = ":memory:";
+#endif
+        }
         _db = new SQLiteAsyncConnection(path);
         await _db.CreateTableAsync<User>();
         await _db.CreateTableAsync<Transaction>();
         await _db.CreateTableAsync<BudgetCategory>();
-        await SeedDemoAccountAsync();
+        if (_seedDemo) await SeedDemoAccountAsync();
     }
 
     /// <summary>
@@ -82,7 +117,9 @@ public class DatabaseService
             new BudgetCategory { UserId = uid, Name = "Épargne",        Amount = 400  },
         };
         foreach (var c in categories)
+        {
             await _db!.InsertAsync(c);
+        }
 
         // Dates relatives au mois courant et au mois précédent
         var now = DateTime.Now;
@@ -127,7 +164,9 @@ public class DatabaseService
             new Transaction { UserId=uid, Name="Chaussures sport", Category="Vêtements",    Amount=89m,    Date=cur(py,pm,18), Type=TransactionType.Expense },
         };
         foreach (var t in transactions)
+        {
             await _db!.InsertAsync(t);
+        }
     }
 
     // ── User ─────────────────────────────────────────────────────────────────────

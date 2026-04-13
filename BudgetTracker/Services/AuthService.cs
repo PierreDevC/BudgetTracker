@@ -16,7 +16,7 @@ public class AuthService
     /// <summary>
     /// L'instance de session utilisateur.
     /// </summary>
-    readonly UserSession _session;
+    readonly IUserSession _session;
 
     /// <summary>
     /// Le facteur de travail BCrypt (coût du hachage).
@@ -26,7 +26,7 @@ public class AuthService
     /// <summary>
     /// Initialise une nouvelle instance de la classe AuthService.
     /// </summary>
-    public AuthService(DatabaseService db, UserSession session)
+    public AuthService(DatabaseService db, IUserSession session)
     {
         _db = db;
         _session = session;
@@ -55,9 +55,16 @@ public class AuthService
     public async Task<bool> LoginAsync(string email, string password)
     {
         var user = await _db.GetUserByEmailAsync(email.Trim().ToLower());
-        if (user is null) return false;
+        if (user is null)
+        {
+            return false;
+        }
         // BCrypt.Verify compare le mot de passe au hachage (sel extrait automatiquement)
-        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) return false;
+        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+        {
+            return false;
+        }
+
         _session.Save(user.Id);
         await _db.LoadUserDataAsync(user);
         return true;
@@ -104,7 +111,9 @@ public class AuthService
 
         // Vérifie que le mot de passe actuel est correct avant d'autoriser le changement
         if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.PasswordHash))
+        {
             return (false, "Mot de passe actuel incorrect.");
+        }
 
         // Génère un nouveau hachage BCrypt avec un nouveau sel intégré
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword, WorkFactor);

@@ -62,9 +62,11 @@ public class Transaction
     /// <summary>
     /// Obtient la couleur associée au montant de la transaction.
     /// </summary>
+#if ANDROID || IOS || MACCATALYST || WINDOWS
     [Ignore]
     public Color AmountColor =>
         Type == TransactionType.Income
             ? Color.FromArgb("#00B894")
             : Color.FromArgb("#FF7675");
+#endif
 }

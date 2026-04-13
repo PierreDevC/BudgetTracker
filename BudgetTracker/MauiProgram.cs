@@ -24,7 +24,7 @@ public static class MauiProgram
             });
 
         // Services (singletons — hold shared state)
-        builder.Services.AddSingleton<Services.UserSession>();
+        builder.Services.AddSingleton<Services.IUserSession, Services.UserSession>();
         builder.Services.AddSingleton<Services.DatabaseService>();
         builder.Services.AddSingleton<Services.AuthService>();
 
