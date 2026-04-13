@@ -1,4 +1,4 @@
-# BudgetTracker
+# BudgetGo (BudgetTracker)
 
 Application mobile et de bureau pour la gestion de budget personnel, développée avec .NET MAUI.
 
